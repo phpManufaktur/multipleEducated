@@ -1,0 +1,17 @@
+<!-- $Id: backend.question.list.htt 9 2010-07-18 09:54:20Z ralf $ -->
+<h2>{$header}</h2>
+{$intro}
+<table>
+  <colgroup>
+    <col width="4%" />
+    <col width="3%" />
+    <col width="7%" />
+    <col width="13%" />
+    <col width="20%" />
+    <col width="39%" />
+    <col width="7%" />
+    <col width="7%" />
+  </colgroup>
+{$items}
+</table>
+</form>

@@ -1,0 +1,23 @@
+<!-- $Id: frontend.answer.htt 9 2010-07-18 09:54:20Z ralf $ -->
+<h2>{$header}</h2>
+<form name="{$form_name}" action="{$form_action}" method="post">
+  <input type="hidden" name="{$action_name}" value="{$action_value}" />
+  <input type="hidden" name="{$id_name}" value="{$id_value}" />
+  <div class="ed_question_box">
+    <div class="ed_question">
+      {$question}
+    </div>
+  </div>
+  <div class="ed_answer_repeat">
+    {$answer}
+  </div>
+  <div class="{$answer_class}">
+    <div class="ed_answer_valid">
+      {$explain}
+    </div>
+  </div>
+  <div class="ed_buttons">
+    <input type="submit" value="{$btn_ok}" />&nbsp;
+    <input type="button" value="{$btn_abort}" onclick="javascript: window.location = '{$abort_location}'; return false;" />
+  </div>
+</form>

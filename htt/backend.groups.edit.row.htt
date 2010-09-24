@@ -1,0 +1,7 @@
+<tr>
+  <td>{$id}</td>
+  <td>{$group}</td>
+  <td>{$desc}</td>
+  <td>{$status}</td>
+  <td>{$update}</td>
+</tr>

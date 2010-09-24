@@ -1,0 +1,10 @@
+<tr class="{$class}">
+  <td>{$id}</td>
+  <td>{$locked}</td>
+  <td>{$created}</td>
+  <td>{$group}</td>
+  <td>{$name}</td>
+  <td>{$question}</td>
+  <td>{$start}</td>
+  <td>{$end}</td>
+</tr>

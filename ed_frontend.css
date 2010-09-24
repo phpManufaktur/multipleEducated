@@ -1,0 +1,90 @@
+/**
+multipleEducated
+**/
+.educated_container {
+	float: right;
+	width: 98%;
+	margin: 20px 0 20px 0;
+	padding: 5px 10px;
+	border: 1px solid #dfdfdf;
+}
+#educated {
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 8pt;
+	margin: 0px;
+  padding: 0px;
+	width: 390px;
+}
+.ed_message {
+	border: 1px solid #0000CC;
+  color: #000;
+  background-color: #FFFFCC;
+  margin: 20px 0 10px 0;
+  padding: 10px;
+  font-size: 8pt;
+}
+.ed_error {
+ border: 1px solid #ff0000;
+ color: #ff0000;
+ background-color: #ffdddd;
+ margin: 20px 0 10px 0;
+ padding: 10px;
+ font-size: 8pt;
+}
+.ed_content {
+
+}
+.ed_question_box {
+	background-image: url(images/question.png);
+	background-repeat: no-repeat;
+	background-position: top right;
+	margin: 0px;
+	padding: 0px;
+	width: 390px;
+	min-height: 100px;
+	vertical-align: middle;
+}
+.ed_question {
+	padding: 20px 120px 20px 0px;
+	font-size: 10pt;
+	font-weight: bold;
+}
+.ed_answer_box  {
+	clear: both;
+	margin: 5px 0px 5px 0px;
+	padding: 0px;
+}
+.ed_answer {
+	float: right;
+	width: 350px;
+	margin: 0px;
+	padding: 0px;
+}
+.ed_answer_valid {
+	float: right;
+	width: 300px;
+	margin: 0;
+	padding: 0;
+}
+.ed_answer_bad,
+.ed_answer_good {
+	margin: 0;
+	padding: 0;
+	min-height: 100px;
+	vertical-align: middle;
+}
+.ed_answer_good {
+	background-image: url(images/smiley-good.png);
+	background-position: top left;
+	background-repeat: no-repeat;
+	}
+.ed_answer_bad {
+	background-image: url(images/smiley-bad.png);
+	background-position: top left;
+	background-repeat: no-repeat;
+	}
+.ed_buttons {
+	clear: both;
+	margin: 0px;
+	padding: 20px 0 10px 0;
+}

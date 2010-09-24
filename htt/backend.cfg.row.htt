@@ -1,0 +1,5 @@
+<tr>
+  <td>{$name}</td>
+  <td>{$value}</td>
+  <td>{$desc}</td>
+</tr>

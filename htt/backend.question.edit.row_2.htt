@@ -1,0 +1,4 @@
+<tr>
+  <td class="ed_label">{$label}</td>
+  <td colspan="2">{$item}</td>
+</tr>

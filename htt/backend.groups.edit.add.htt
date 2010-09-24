@@ -1,0 +1,9 @@
+<tr>
+  <td colspan="6">&nbsp;</td>
+</tr>
+<tr>
+  <td colspan="6" class="intro">{$intro}</td>
+</tr>
+<tr>
+  <td colspan="6">&nbsp;</td>
+</tr>
