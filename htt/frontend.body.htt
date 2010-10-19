@@ -1,4 +1,4 @@
-<!-- $Id: frontend.body.htt 9 2010-07-18 09:54:20Z ralf $ -->
+<!-- $Id$ -->
 <div id="educated">
   <div class="{$class}">
     {$content}

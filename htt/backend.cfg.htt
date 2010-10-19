@@ -1,4 +1,4 @@
-<!-- $Id: backend.cfg.htt 9 2010-07-18 09:54:20Z ralf $ -->
+<!-- $Id$ -->
 <form name="{$form_name}" action="{$form_action}" method="post">
   <input type="hidden" name="{$action_name}" value="{$action_value}" />
   <input type="hidden" name="{$items_name}" value="{$items_value}" />

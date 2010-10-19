@@ -1,4 +1,4 @@
-<!-- $Id: backend.body.htt 9 2010-07-18 09:54:20Z ralf $ -->
+<!-- $Id$ -->
 <div class="ed_backend">
   {$navigation}
   <div{$class}>{$content}</div>

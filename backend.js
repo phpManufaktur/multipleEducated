@@ -1,7 +1,7 @@
 /**
   Copyright (c) 2009, Ralf Hertsch
 
-  $Id: backend.js 3 2009-07-18 05:55:17Z ralf $
+  $Id$
 **/
 
 /**

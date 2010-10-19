@@ -1,4 +1,4 @@
-<!-- $Id: frontend.answer.htt 9 2010-07-18 09:54:20Z ralf $ -->
+<!-- $Id$ -->
 <h2>{$header}</h2>
 <form name="{$form_name}" action="{$form_action}" method="post">
   <input type="hidden" name="{$action_name}" value="{$action_value}" />
