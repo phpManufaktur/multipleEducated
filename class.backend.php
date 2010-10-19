@@ -1,22 +1,14 @@
 <?php
 
 /**
-  Module developed for the Open Source Content Management System Website Baker (http://websitebaker.org)
-  Copyright (c) 2009, Ralf Hertsch
-  Contact me: hertsch(at)berlin.de, http://phpManufaktur.de
-
-  This module is free software. You can redistribute it and/or modify it
-  under the terms of the GNU General Public License  - version 2 or later,
-  as published by the Free Software Foundation: http://www.gnu.org/licenses/gpl.html.
-
-  This module is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-  
-  $Id: class.backend.php 9 2010-07-18 09:54:20Z ralf $
-  
-**/
+ * multipleEducated - create quizzes like "Bildungshappen" for WebsiteBaker
+ * 
+ * @author Ralf Hertsch (ralf.hertsch@phpmanufaktur.de)
+ * @link http://phpmanufaktur.de/cms/topics/multipleeducated.php
+ * @copyright 2009 - 2010
+ * @license GNU GPL (http://www.gnu.org/licenses/gpl.html)
+ * @version $Id$
+ */ 
 
 global $parser;
 global $rhTools;
@@ -145,7 +137,7 @@ class backendEducated {
     foreach ($info_text as $item) {
       if (strpos($item, '$module_version') !== false) {
         // split string $module_version
-        $value = split('=', $item);
+        $value = explode('=', $item);
         // return floatval
         return floatval(preg_replace('([\'";,\(\)[:space:][:alpha:]])', '', $value[1])); 
       } 

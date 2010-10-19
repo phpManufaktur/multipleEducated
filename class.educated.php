@@ -1,29 +1,21 @@
 <?php
 
 /**
-  Module developed for the Open Source Content Management System Website Baker (http://websitebaker.org)
-  Copyright (c) 2009, Ralf Hertsch
-  Contact me: hertsch(at)berlin.de, http://phpManufaktur.de
-
-  This module is free software. You can redistribute it and/or modify it
-  under the terms of the GNU General Public License  - version 2 or later,
-  as published by the Free Software Foundation: http://www.gnu.org/licenses/gpl.html.
-
-  This module is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-  
-  $Id: class.educated.php 9 2010-07-18 09:54:20Z ralf $
-  
-**/
+ * multipleEducated - create quizzes like "Bildungshappen" for WebsiteBaker
+ * 
+ * @author Ralf Hertsch (ralf.hertsch@phpmanufaktur.de)
+ * @link http://phpmanufaktur.de/cms/topics/multipleeducated.php
+ * @copyright 2009 - 2010
+ * @license GNU GPL (http://www.gnu.org/licenses/gpl.html)
+ * @version $Id$
+ */ 
 
 // prevent this file from being accesses directly
 if(defined('WB_PATH') == false) {
   exit("Cannot access this file directly");
 }
 
-class dbEducatedQuestions extends dbConnect {
+class dbEducatedQuestions extends dbConnectLE {
 	
 	const field_id						= 'question_id';
 	const field_name					= 'question_name';
@@ -73,7 +65,7 @@ class dbEducatedQuestions extends dbConnect {
 	} // __construct()
 } // dbEducatedQuestions
 
-class dbEducatedItems extends dbConnect {
+class dbEducatedItems extends dbConnectLE {
 	
 	const field_id						= 'item_id';
 	const field_question_id		= 'item_question_id';
@@ -131,7 +123,7 @@ class dbEducatedItems extends dbConnect {
 	
 } // class dbEducatedItems
 
-class dbEducatedGroups extends dbConnect {
+class dbEducatedGroups extends dbConnectLE {
 	
 	const field_id						= 'grp_id';
 	const field_name					= 'grp_name';
@@ -174,7 +166,7 @@ class dbEducatedGroups extends dbConnect {
 	
 } // class dbEducatedGroups
 
-class dbEducatedConfig extends dbConnect {
+class dbEducatedConfig extends dbConnectLE {
 	
 	const field_id						= 'cfg_id';
 	const field_name					= 'cfg_name';

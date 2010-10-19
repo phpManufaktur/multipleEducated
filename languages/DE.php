@@ -1,33 +1,32 @@
 <?php
 
 /**
-  Module developed for the Open Source Content Management System Website Baker (http://websitebaker.org)
-  Copyright (c) 2009, Ralf Hertsch
-  Contact me: hertsch(at)berlin.de, http://phpManufaktur.de
+ * multipleEducated - create quizzes like "Bildungshappen" for WebsiteBaker
+ * 
+ * @author Ralf Hertsch (ralf.hertsch@phpmanufaktur.de)
+ * @link http://phpmanufaktur.de/cms/topics/multipleeducated.php
+ * @copyright 2009 - 2010
+ * @license GNU GPL (http://www.gnu.org/licenses/gpl.html)
+ * @version $Id$
+ * 
+ * IMPORTANT NOTE:
+ * 
+ * If you are editing this file or creating a new language file
+ * you must ensure that you SAVE THIS FILE UTF-8 ENCODED.
+ * Otherwise all special chars will be destroyed and displayed improper!
+ * 
+ * It is NOT NECESSARY to mask special chars as HTML entities!
+ * 
+ * The Original Source is GERMAN (DE) by Ralf Hertsch, please use
+ * always this file as reference for translations.
+ */
 
-  This module is free software. You can redistribute it and/or modify it
-  under the terms of the GNU General Public License  - version 2 or later,
-  as published by the Free Software Foundation: http://www.gnu.org/licenses/gpl.html.
+// module description for WebsiteBaker backend information
+$module_description 	= 'multipleEducatd - Frage- und Antwortspiele im Stil der "Bildungshappen" (ZEIT) erstellen und verwalten';
 
-  This module is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-  
-  $Id: DE.php 9 2010-07-18 09:54:20Z ralf $
-  
-  IMPORTANT NOTE:
+// name of the person(s) who translated and edited this language file
+$module_translation_by = 'Ralf Hertsch (phpManufaktur)';
 
-  If you are editing this file or creating a new language file
-  you must ensure that you SAVE THIS FILE UTF-8 ENCODED.
-  Otherwise all special chars will be destroyed and displayed improper!
-
-	It is NOT NECESSARY to mask special chars as HTML entities!
-
-	The Original Source is GERMAN (DE) by Ralf Hertsch, please use
-  always this file as reference for translations.
-
-**/
 
 define('ed_btn_abort',									'Abbruch');
 define('ed_btn_ok',											'Übernehmen');
