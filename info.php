@@ -29,6 +29,8 @@
  * 2010-10-19
  * Changed deprecated functions in class.backend.php
  * Added support for english language (EN.php)
+ * Changed database interface from dbConnect to dbConnect_LE
+ * Removed included Dwoo and use it as external addon
  * 
  */
 
