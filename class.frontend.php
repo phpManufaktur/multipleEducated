@@ -261,20 +261,41 @@ class multipleEducated {
   		// Frage zufaellig auswaehlen, Datum wird nicht beruecksichtigt
   		if ($this->useGroupID > 0) {
   			// Frage aus bestimmter Gruppe auswaehlen
-  			$SQL = sprintf(	"SELECT * FROM %s WHERE %s='%s' AND %s='%s' ORDER BY RAND() LIMIT 1",
-  										$dbEdQuestions->getTableName(),
-  										dbEducatedQuestions::field_status,
-  										dbEducatedQuestions::status_active,
-  										dbEducatedQuestions::field_group,
-  										$this->useGroupID);
+  			$SQL = sprintf( "SELECT %s FROM %s WHERE %s='%s' AND %s='%s'",
+  											dbEducatedQuestions::field_id,
+  											$dbEdQuestions->getTableName(),
+  											dbEducatedQuestions::field_status,
+  											dbEducatedQuestions::status_active,
+  											dbEducatedQuestions::field_group,
+  											$this->useGroupID);
   		}
   		else {
   			// Frage aus beliebiger Gruppe
-  			$SQL = sprintf(	"SELECT * FROM %s WHERE %s='%s' ORDER BY RAND() LIMIT 1",
+  			$SQL = sprintf(	"SELECT * FROM %s WHERE %s='%s'",
   										$dbEdQuestions->getTableName(),
   										dbEducatedQuestions::field_status,
   										dbEducatedQuestions::status_active);
   		}
+  		
+  		// Fragen auswaehlen
+  		if (!$dbEdQuestions->sqlExec($SQL, $result)) {
+  			$this->setError(sprintf('[%s - %s] %s', __METHOD__, __LINE__, $dbEdQuestions->getError()));
+  			return false;
+  		}
+  		$all_questions = array();
+  		foreach ($result as $q) $all_questions[] = $q[dbEducatedQuestions::field_id];
+  		$used_questions = isset($_SESSION['MC_QUESTIONS_USED']) ? $_SESSION['MC_QUESTIONS_USED'] : array();
+  		$free_questions = array_diff($all_questions, $used_questions);
+  		if (count($free_questions) == 0) {
+  			$free_questions = $all_questions;
+  			$used_questions = array();
+  		}
+  			
+  		$SQL = sprintf( "SELECT * FROM %s WHERE FIND_IN_SET(%s, '%s') ORDER BY RAND() LIMIT 1",
+  										$dbEdQuestions->getTableName(),
+  										dbEducatedQuestions::field_id,
+  										implode(',', $free_questions));
+  			
   		
   		$question = array();
   		if (!$dbEdQuestions->sqlExec($SQL, $question)) {
@@ -287,6 +308,9 @@ class multipleEducated {
   			return false;
   		}
   		$question = $question[0];
+  		// SESSION setzen
+  		$used_questions[] = $question[dbEducatedQuestions::field_id];
+  		$_SESSION['MC_QUESTIONS_USED'] = $used_questions;
   	}
   	else {
   		// Frage aus einem Datumsbereich zufaellig auswaehlen

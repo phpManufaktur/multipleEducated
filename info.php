@@ -1,43 +1,39 @@
 <?php
 
 /**
- * multipleEducated - create quizzes like "Bildungshappen" for WebsiteBaker
+ * multipleEducated
  * 
  * @author Ralf Hertsch (ralf.hertsch@phpmanufaktur.de)
- * @link http://phpmanufaktur.de/cms/topics/multipleeducated.php
- * @copyright 2009 - 2010
+ * @link http://phpmanufaktur.de
+ * @copyright 2011
  * @license GNU GPL (http://www.gnu.org/licenses/gpl.html)
  * @version $Id$
  * 
- * 0.10
- * 2009-06-24
- * First BETA Release
- * 
- * 0.11
- * 2010-04-08
- * Second BETA Release
- * 
- * 0.12
- * 2010-07-18
- * Release Candidate
- * 
- * 0.13
- * 2010-09-17
- * Small Bugfixes
- * 
- * 0.14
- * 2010-10-19
- * Changed deprecated functions in class.backend.php
- * Added support for english language (EN.php)
- * Changed database interface from dbConnect to dbConnect_LE
- * Removed included Dwoo and use it as external addon
- * 
+ * FOR VERSION- AND RELEASE NOTES PLEASE LOOK AT INFO.TXT!
  */
+
+// try to include LEPTON class.secure.php to protect this file and the whole CMS!
+if (defined('WB_PATH')) {	
+	if (defined('LEPTON_VERSION')) include(WB_PATH.'/framework/class.secure.php');
+} elseif (file_exists($_SERVER['DOCUMENT_ROOT'].'/framework/class.secure.php')) {
+	include($_SERVER['DOCUMENT_ROOT'].'/framework/class.secure.php'); 
+} else {
+	$subs = explode('/', dirname($_SERVER['SCRIPT_NAME']));	$dir = $_SERVER['DOCUMENT_ROOT'];
+	$inc = false;
+	foreach ($subs as $sub) {
+		if (empty($sub)) continue; $dir .= '/'.$sub;
+		if (file_exists($dir.'/framework/class.secure.php')) { 
+			include($dir.'/framework/class.secure.php'); $inc = true;	break; 
+		} 
+	}
+	if (!$inc) trigger_error(sprintf("[ <b>%s</b> ] Can't include LEPTON class.secure.php!", $_SERVER['SCRIPT_NAME']), E_USER_ERROR);
+}
+// end include LEPTON class.secure.php
 
 $module_directory     = 'educated';
 $module_name          = 'multipleEducated';
 $module_function      = 'tool';
-$module_version       = '0.14';
+$module_version       = '0.15';
 $module_status        = 'Stable';
 $module_platform      = '2.8.x';
 $module_author        = 'Ralf Hertsch, Berlin (Germany)';
