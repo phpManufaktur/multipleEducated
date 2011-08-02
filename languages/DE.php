@@ -1,25 +1,34 @@
 <?php
 
 /**
- * multipleEducated - create quizzes like "Bildungshappen" for WebsiteBaker
+ * multipleEducated
  * 
  * @author Ralf Hertsch (ralf.hertsch@phpmanufaktur.de)
- * @link http://phpmanufaktur.de/cms/topics/multipleeducated.php
- * @copyright 2009 - 2010
+ * @link http://phpmanufaktur.de
+ * @copyright 2011
  * @license GNU GPL (http://www.gnu.org/licenses/gpl.html)
  * @version $Id$
  * 
- * IMPORTANT NOTE:
- * 
- * If you are editing this file or creating a new language file
- * you must ensure that you SAVE THIS FILE UTF-8 ENCODED.
- * Otherwise all special chars will be destroyed and displayed improper!
- * 
- * It is NOT NECESSARY to mask special chars as HTML entities!
- * 
- * The Original Source is GERMAN (DE) by Ralf Hertsch, please use
- * always this file as reference for translations.
+ * FOR VERSION- AND RELEASE NOTES PLEASE LOOK AT INFO.TXT!
  */
+
+// try to include LEPTON class.secure.php to protect this file and the whole CMS!
+if (defined('WB_PATH')) {	
+	if (defined('LEPTON_VERSION')) include(WB_PATH.'/framework/class.secure.php');
+} elseif (file_exists($_SERVER['DOCUMENT_ROOT'].'/framework/class.secure.php')) {
+	include($_SERVER['DOCUMENT_ROOT'].'/framework/class.secure.php'); 
+} else {
+	$subs = explode('/', dirname($_SERVER['SCRIPT_NAME']));	$dir = $_SERVER['DOCUMENT_ROOT'];
+	$inc = false;
+	foreach ($subs as $sub) {
+		if (empty($sub)) continue; $dir .= '/'.$sub;
+		if (file_exists($dir.'/framework/class.secure.php')) { 
+			include($dir.'/framework/class.secure.php'); $inc = true;	break; 
+		} 
+	}
+	if (!$inc) trigger_error(sprintf("[ <b>%s</b> ] Can't include LEPTON class.secure.php!", $_SERVER['SCRIPT_NAME']), E_USER_ERROR);
+}
+// end include LEPTON class.secure.php
 
 // module description for WebsiteBaker backend information
 $module_description 	= 'multipleEducatd - Frage- und Antwortspiele im Stil der "Bildungshappen" (ZEIT) erstellen und verwalten';
