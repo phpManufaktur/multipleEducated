@@ -1,0 +1,36 @@
+### multipleEducated
+2009 - 2012 by phpManufaktur
+Ralf Hertsch, Stockholmer Str. 31, 13359 Berlin (Germany)
+http://phpManufaktur.de - ralf.hertsch@phpManufaktur.de
+
+Release 0.16 - 2012-06-20
+
+* change WebsiteBaker version check
+
+Release 0.15 - 2011-08-02
+
+* Changed shuffling now avoid repetual questions
+* Grant compatibillity for LEPTON CMS
+
+Release 0.14 - 2010-10-19
+
+* Changed deprecated functions in class.backend.php
+* Added support for english language (EN.php)
+* Changed database interface from dbConnect to dbConnect_LE
+* Removed included Dwoo and use it as external addon
+
+Release 0.13 - 2010-09-17
+
+* Small Bugfixes
+
+Release 0.12 - 2010-07-18
+
+* Release Candidate
+
+Release 0.11 - 2010-04-08
+
+* Second BETA Release
+ 
+Release 0.10 - 2009-06-24
+
+* First BETA Release
