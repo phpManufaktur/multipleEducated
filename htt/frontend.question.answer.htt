@@ -1,4 +1,3 @@
-<!-- $Id$ -->
 <div class="ed_answer_box">
   <input class="ed_answer_radio" type="radio" name="{$radio_name}" value="{$radio_value}" />
   <div class="ed_answer">

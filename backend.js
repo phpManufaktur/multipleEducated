@@ -1,8 +1,11 @@
 /**
-  Copyright (c) 2009, Ralf Hertsch
-
-  $Id$
-**/
+ * multipleEducated
+ *
+ * @author Ralf Hertsch <ralf.hertsch@phpmanufaktur.de>
+ * @link http://phpmanufaktur.de
+ * @copyright 2009 - 2012
+ * @license MIT License (MIT) http://www.opensource.org/licenses/MIT
+ */
 
 /**
  * Date Picker
@@ -10,7 +13,7 @@
 
 // default settings
 var A_TCALDEF = {
-	'months' : ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'],
+	'months' : ['Januar', 'Februar', 'Mï¿½rz', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'],
 	'weekdays' : ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'],
 	'yearscroll': true, // show year scroller
 	'weekstart': 1, // first day of week: 0-Su or 1-Mo

@@ -2,33 +2,34 @@
 
 /**
  * multipleEducated
- * 
- * @author Ralf Hertsch (ralf.hertsch@phpmanufaktur.de)
+ *
+ * @author Ralf Hertsch <ralf.hertsch@phpmanufaktur.de>
  * @link http://phpmanufaktur.de
- * @copyright 2011
- * @license GNU GPL (http://www.gnu.org/licenses/gpl.html)
- * @version $Id$
- * 
- * FOR VERSION- AND RELEASE NOTES PLEASE LOOK AT INFO.TXT!
+ * @copyright 2009 - 2012
+ * @license MIT License (MIT) http://www.opensource.org/licenses/MIT
  */
 
-// try to include LEPTON class.secure.php to protect this file and the whole CMS!
-if (defined('WB_PATH')) {	
-	if (defined('LEPTON_VERSION')) include(WB_PATH.'/framework/class.secure.php');
-} elseif (file_exists($_SERVER['DOCUMENT_ROOT'].'/framework/class.secure.php')) {
-	include($_SERVER['DOCUMENT_ROOT'].'/framework/class.secure.php'); 
-} else {
-	$subs = explode('/', dirname($_SERVER['SCRIPT_NAME']));	$dir = $_SERVER['DOCUMENT_ROOT'];
-	$inc = false;
-	foreach ($subs as $sub) {
-		if (empty($sub)) continue; $dir .= '/'.$sub;
-		if (file_exists($dir.'/framework/class.secure.php')) { 
-			include($dir.'/framework/class.secure.php'); $inc = true;	break; 
-		} 
-	}
-	if (!$inc) trigger_error(sprintf("[ <b>%s</b> ] Can't include LEPTON class.secure.php!", $_SERVER['SCRIPT_NAME']), E_USER_ERROR);
+// include class.secure.php to protect this file and the whole CMS!
+if (defined('WB_PATH')) {
+  if (defined('LEPTON_VERSION'))
+    include(WB_PATH.'/framework/class.secure.php');
 }
-// end include LEPTON class.secure.php
+else {
+  $oneback = "../";
+  $root = $oneback;
+  $level = 1;
+  while (($level < 10) && (!file_exists($root.'/framework/class.secure.php'))) {
+    $root .= $oneback;
+    $level += 1;
+  }
+  if (file_exists($root.'/framework/class.secure.php')) {
+    include($root.'/framework/class.secure.php');
+  }
+  else {
+    trigger_error(sprintf("[ <b>%s</b> ] Can't include class.secure.php!", $_SERVER['SCRIPT_NAME']), E_USER_ERROR);
+  }
+}
+// end include class.secure.php
 
 class dbDroplets extends dbConnectLE {
 
@@ -40,7 +41,7 @@ class dbDroplets extends dbConnectLE {
 	const field_modified_by			= 'modified_by';
 	const field_active					= 'active';
 	const field_comments				= 'comments';
-	
+
 	public function __construct() {
 		parent::__construct();
 		$this->setTableName('mod_droplets');
@@ -52,9 +53,9 @@ class dbDroplets extends dbConnectLE {
 		$this->addFieldDefinition(self::field_modified_by, "INT(11) NOT NULL DEFAULT '0'");
 		$this->addFieldDefinition(self::field_active, "INT(11) NOT NULL DEFAULT '0'");
 		$this->addFieldDefinition(self::field_comments, "TEXT NOT NULL DEFAULT ''");
-		$this->checkFieldDefinitions();	
+		$this->checkFieldDefinitions();
 	} // __construct()
-	
+
 } // class dbDroplets
 
 define('droplet_educated_name', 'Educated');
@@ -62,17 +63,17 @@ define('droplet_educated_code', '$educated = "<p>- multipleEducated ist nicht im
 define('droplet_educated_description', '');
 
 class checkDroplets {
-	
+
 	var $droplet_path	= '';
 	var $error = '';
-	
+
 	public function __construct() {
 		$this->droplet_path = WB_PATH . '/modules/' . basename(dirname(__FILE__)) . '/droplets/' ;
 	} // __construct()
-		
+
 	/**
     * Set $this->error to $error
-    * 
+    *
     * @param STR $error
     */
   public function setError($error) {
@@ -81,7 +82,7 @@ class checkDroplets {
 
   /**
     * Get Error from $this->error;
-    * 
+    *
     * @return STR $this->error
     */
   public function getError() {
@@ -90,22 +91,22 @@ class checkDroplets {
 
   /**
     * Check if $this->error is empty
-    * 
+    *
     * @return BOOL
     */
   public function isError() {
     return (bool) !empty($this->error);
   } // isError
-	
+
 	public function insertDropletsIntoTable() {
 		global $admin;
 		// Read droplets from directory
-		$folder = opendir($this->droplet_path.'.'); 
+		$folder = opendir($this->droplet_path.'.');
 		$names = array();
 		while (false !== ($file = readdir($folder))) {
 			$ext = strtolower(substr($file,-4));
 			if ($ext	==	".php") {
-				$names[count($names)] = $file; 
+				$names[count($names)] = $file;
 			}
 		}
 		closedir($folder);
@@ -160,12 +161,12 @@ class checkDroplets {
 						$this->setError(sprintf('[%s - %s] %s', __METHOD__, __LINE__, $dbDroplets->getError()));
 						return false;
 					}
-				}				
-			}  
+				}
+			}
 		}
 		return true;
 	} // insertDropletsIntoTable()
-	
+
 	public function getDropletCodeFromFile($dropletfile) {
 		$data = "";
 		$filename = $this->droplet_path.$dropletfile;
@@ -173,10 +174,10 @@ class checkDroplets {
 			$filehandle = fopen ($filename, "r");
 			$data = fread ($filehandle, filesize ($filename));
 			fclose($filehandle);
-		}	
+		}
 		return $data;
 	} // getDropletCodeFromFile()
-	
+
 } // checkDroplets
 
 ?>

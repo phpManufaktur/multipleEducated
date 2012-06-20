@@ -2,33 +2,34 @@
 
 /**
  * multipleEducated
- * 
- * @author Ralf Hertsch (ralf.hertsch@phpmanufaktur.de)
+ *
+ * @author Ralf Hertsch <ralf.hertsch@phpmanufaktur.de>
  * @link http://phpmanufaktur.de
- * @copyright 2011
- * @license GNU GPL (http://www.gnu.org/licenses/gpl.html)
- * @version $Id$
- * 
- * FOR VERSION- AND RELEASE NOTES PLEASE LOOK AT INFO.TXT!
+ * @copyright 2009 - 2012
+ * @license MIT License (MIT) http://www.opensource.org/licenses/MIT
  */
 
-// try to include LEPTON class.secure.php to protect this file and the whole CMS!
-if (defined('WB_PATH')) {	
-	if (defined('LEPTON_VERSION')) include(WB_PATH.'/framework/class.secure.php');
-} elseif (file_exists($_SERVER['DOCUMENT_ROOT'].'/framework/class.secure.php')) {
-	include($_SERVER['DOCUMENT_ROOT'].'/framework/class.secure.php'); 
-} else {
-	$subs = explode('/', dirname($_SERVER['SCRIPT_NAME']));	$dir = $_SERVER['DOCUMENT_ROOT'];
-	$inc = false;
-	foreach ($subs as $sub) {
-		if (empty($sub)) continue; $dir .= '/'.$sub;
-		if (file_exists($dir.'/framework/class.secure.php')) { 
-			include($dir.'/framework/class.secure.php'); $inc = true;	break; 
-		} 
-	}
-	if (!$inc) trigger_error(sprintf("[ <b>%s</b> ] Can't include LEPTON class.secure.php!", $_SERVER['SCRIPT_NAME']), E_USER_ERROR);
+// include class.secure.php to protect this file and the whole CMS!
+if (defined('WB_PATH')) {
+  if (defined('LEPTON_VERSION'))
+    include(WB_PATH.'/framework/class.secure.php');
 }
-// end include LEPTON class.secure.php
+else {
+  $oneback = "../";
+  $root = $oneback;
+  $level = 1;
+  while (($level < 10) && (!file_exists($root.'/framework/class.secure.php'))) {
+    $root .= $oneback;
+    $level += 1;
+  }
+  if (file_exists($root.'/framework/class.secure.php')) {
+    include($root.'/framework/class.secure.php');
+  }
+  else {
+    trigger_error(sprintf("[ <b>%s</b> ] Can't include class.secure.php!", $_SERVER['SCRIPT_NAME']), E_USER_ERROR);
+  }
+}
+// end include class.secure.php
 
 require_once(WB_PATH.'/modules/'.basename(dirname(__FILE__)).'/initialize.php');
 
@@ -37,7 +38,7 @@ global $rhTools;
 global $dbEdQuestions;
 global $dbEdItems;
 global $dbEdGroups;
-global $dbEdCfg; 
+global $dbEdCfg;
 
 if (!is_object($parser)) $parser = new Dwoo();
 if (!is_object($rhTools)) $rhTools = new rhTools();
@@ -47,22 +48,22 @@ if (!is_object($dbEdGroups)) $dbEdGroups = new dbEducatedGroups();
 if (!is_object($dbEdCfg)) $dbEdCfg = new dbEducatedConfig();
 
 class multipleEducated {
-	
+
 	const request_action				= 'eda';
-	
+
 	const action_default				= 'def';
 	const action_question				= 'quest';
 	const action_answer_check		= 'ac';
-	
+
 	private $page_link 					= '';
 	private $template_path			= '';
 	private $error							= '';
 	private $message						= '';
-	
+
 	private $cfgQuestionShuffle		= 0;
 	private $cfgRepliesCount			= 3;
 	private $useGroupID						= -1;
-	
+
 	public function __construct($groupID = -1) {
 		$tools = new rhTools();
 		$tools->getPageLinkByPageID(PAGE_ID, $this->page_link);
@@ -72,10 +73,10 @@ class multipleEducated {
 		$this->cfgQuestionShuffle = $dbEducatedConfig->getValue(dbEducatedConfig::cfgQuestionShuffle);
 		$this->cfgRepliesCount = $dbEducatedConfig->getValue(dbEducatedConfig::cfgRepliesCount);
 	} // __construct()
-	
+
 	/**
     * Set $this->error to $error
-    * 
+    *
     * @param STR $error
     */
   public function setError($error) {
@@ -84,7 +85,7 @@ class multipleEducated {
 
   /**
     * Get Error from $this->error;
-    * 
+    *
     * @return STR $this->error
     */
   public function getError() {
@@ -93,7 +94,7 @@ class multipleEducated {
 
   /**
     * Check if $this->error is empty
-    * 
+    *
     * @return BOOL
     */
   public function isError() {
@@ -108,7 +109,7 @@ class multipleEducated {
   }
 
   /** Set $this->message to $message
-    * 
+    *
     * @param STR $message
     */
   public function setMessage($message) {
@@ -117,7 +118,7 @@ class multipleEducated {
 
   /**
     * Get Message from $this->message;
-    * 
+    *
     * @return STR $this->message
     */
   public function getMessage() {
@@ -126,13 +127,13 @@ class multipleEducated {
 
   /**
     * Check if $this->message is empty
-    * 
+    *
     * @return BOOL
     */
   public function isMessage() {
     return (bool) !empty($this->message);
   } // isMessage
-  
+
   /**
    * Return Version of Module
    *
@@ -142,7 +143,7 @@ class multipleEducated {
     // read info.php into array
     $info_text = file(WB_PATH.'/modules/'.basename(dirname(__FILE__)).'/info.php');
     if ($info_text == false) {
-      return -1; 
+      return -1;
     }
     // walk through array
     foreach ($info_text as $item) {
@@ -150,16 +151,16 @@ class multipleEducated {
         // split string $module_version
         $value = split('=', $item);
         // return floatval
-        return floatval(ereg_replace('([\'";,\(\)[:space:][:alpha:]])', '', $value[1])); 
-      } 
+        return floatval(ereg_replace('([\'";,\(\)[:space:][:alpha:]])', '', $value[1]));
+      }
     }
     return -1;
   } // getVersion()
-  
-  
+
+
   /**
    * Verhindert XSS Cross Site Scripting
-   * 
+   *
    * @param REFERENCE $_REQUEST Array
    * @return $request
    */
@@ -172,7 +173,7 @@ class multipleEducated {
   	}
 	  return $request;
   } // xssPrevent()
-	
+
   public function action($page_path = -1) {
   	if ($page_path != -1) {
   		$this->page_link = WB_URL.$page_path;
@@ -181,7 +182,7 @@ class multipleEducated {
   	foreach ($_REQUEST as $key => $value) {
   		if (!in_array($key, $html_allowed)) {
     		$_REQUEST[$key] = $this->xssPrevent($value);
-  		} 
+  		}
   	}
     isset($_REQUEST[self::request_action]) ? $action = $_REQUEST[self::request_action] : $action = self::action_default;
   	switch ($action):
@@ -196,7 +197,7 @@ class multipleEducated {
   		break;
   	endswitch;
   } // action
-	
+
   public function show($content) {
   	global $parser;
   	if ($this->isError()) {
@@ -212,7 +213,7 @@ class multipleEducated {
   	);
   	$parser->output($this->template_path.'frontend.body.htt', $data);
   } // show()
-  
+
   /**
    * Zeigt die Eingangsfrage an
    */
@@ -221,7 +222,7 @@ class multipleEducated {
   	global $dbEdQuestions;
   	global $parser;
   	global $dbEdItems;
-  	
+
   	// Gruppe angegeben?
   	if ($this->useGroupID > 0) {
   		//  Pruefen, ob Gruppe existiert und aktiv ist...
@@ -276,7 +277,7 @@ class multipleEducated {
   										dbEducatedQuestions::field_status,
   										dbEducatedQuestions::status_active);
   		}
-  		
+
   		// Fragen auswaehlen
   		if (!$dbEdQuestions->sqlExec($SQL, $result)) {
   			$this->setError(sprintf('[%s - %s] %s', __METHOD__, __LINE__, $dbEdQuestions->getError()));
@@ -290,17 +291,17 @@ class multipleEducated {
   			$free_questions = $all_questions;
   			$used_questions = array();
   		}
-  			
+
   		$SQL = sprintf( "SELECT * FROM %s WHERE FIND_IN_SET(%s, '%s') ORDER BY RAND() LIMIT 1",
   										$dbEdQuestions->getTableName(),
   										dbEducatedQuestions::field_id,
   										implode(',', $free_questions));
-  			
-  		
+
+
   		$question = array();
   		if (!$dbEdQuestions->sqlExec($SQL, $question)) {
   			$this->setError(sprintf('[%s - %s] %s', __METHOD__, __LINE__, $dbEdQuestions->getError()));
-  			return false;	
+  			return false;
   		}
   		if (sizeof($question) < 1) {
   			// Abfrage fehlgeschlagen
@@ -334,10 +335,10 @@ class multipleEducated {
   										dbEducatedQuestions::field_date_start,
   										dbEducatedQuestions::field_date_stop);
   		}
-  		
+
   		if (!$dbEdQuestions->sqlExec($SQL, $question)) {
   			$this->setError(sprintf('[%s - %s] %s', __METHOD__, __LINE__, $dbEdQuestions->getError()));
-  			return false;	
+  			return false;
   		}
   		if (sizeof($question) < 1) {
   			// Abfrage fehlgeschlagen
@@ -346,7 +347,7 @@ class multipleEducated {
   		}
   		$question = $question[0];
   	}
- 
+
 		$SQL = sprintf(	"SELECT * FROM %s WHERE %s='%s' ORDER BY RAND()",
 										$dbEdItems->getTableName(),
 										dbEducatedItems::field_question_id,
@@ -370,7 +371,7 @@ class multipleEducated {
 				'answer'			=> $answer[dbEducatedItems::field_answer]
 			);
 			$items .= $parser->get($row, $data);
-		}	
+		}
 		// Mitteilungen anzeigen
 		if ($this->isMessage()) {
 			$intro = sprintf('<div class="ed_message">%s</div>', $this->getMessage());
@@ -378,7 +379,7 @@ class multipleEducated {
 		else {
 			$intro = '';
 		}
-  	
+
 		$data = array(
 			'header'					=> ed_header_question,
 			'intro'						=> $intro,
@@ -401,7 +402,7 @@ class multipleEducated {
   	global $dbEdQuestions;
   	global $dbEdItems;
   	global $parser;
-  	
+
   	if (!isset($_REQUEST[dbEducatedItems::field_id])) {
   		// Fehler: keine Auswahl getroffen
   		$this->setMessage(ed_msg_answer_no_selection);
@@ -448,7 +449,7 @@ class multipleEducated {
   	if ($answer[dbEducatedItems::field_truth] == dbEducatedItems::truth_true) {
   		// Frage ist richtig beantwortet
   		$answer_class = 'ed_answer_good';
-  		$wertung = sprintf(ed_str_answer_good, $answer[dbEducatedItems::field_explain]);	
+  		$wertung = sprintf(ed_str_answer_good, $answer[dbEducatedItems::field_explain]);
   		$id = -1;
   		$btn_ok = ed_btn_new_question;
   	}
@@ -458,7 +459,7 @@ class multipleEducated {
   		$wertung = sprintf(ed_str_answer_bad, $answer[dbEducatedItems::field_explain]);
   		$btn_ok = ed_btn_retry;
   	}
-  	  	
+
   	$data = array(
   		'header'					=> ed_header_answer,
   		'form_name'				=> 'ed_answer',
@@ -477,7 +478,7 @@ class multipleEducated {
   	);
   	return $parser->get($this->template_path.'frontend.answer.htt', $data);
   } // checkAnswer()
-  
+
 } // class multipleEducated
 
 ?>

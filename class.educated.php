@@ -2,36 +2,37 @@
 
 /**
  * multipleEducated
- * 
- * @author Ralf Hertsch (ralf.hertsch@phpmanufaktur.de)
+ *
+ * @author Ralf Hertsch <ralf.hertsch@phpmanufaktur.de>
  * @link http://phpmanufaktur.de
- * @copyright 2011
- * @license GNU GPL (http://www.gnu.org/licenses/gpl.html)
- * @version $Id$
- * 
- * FOR VERSION- AND RELEASE NOTES PLEASE LOOK AT INFO.TXT!
+ * @copyright 2009 - 2012
+ * @license MIT License (MIT) http://www.opensource.org/licenses/MIT
  */
 
-// try to include LEPTON class.secure.php to protect this file and the whole CMS!
-if (defined('WB_PATH')) {	
-	if (defined('LEPTON_VERSION')) include(WB_PATH.'/framework/class.secure.php');
-} elseif (file_exists($_SERVER['DOCUMENT_ROOT'].'/framework/class.secure.php')) {
-	include($_SERVER['DOCUMENT_ROOT'].'/framework/class.secure.php'); 
-} else {
-	$subs = explode('/', dirname($_SERVER['SCRIPT_NAME']));	$dir = $_SERVER['DOCUMENT_ROOT'];
-	$inc = false;
-	foreach ($subs as $sub) {
-		if (empty($sub)) continue; $dir .= '/'.$sub;
-		if (file_exists($dir.'/framework/class.secure.php')) { 
-			include($dir.'/framework/class.secure.php'); $inc = true;	break; 
-		} 
-	}
-	if (!$inc) trigger_error(sprintf("[ <b>%s</b> ] Can't include LEPTON class.secure.php!", $_SERVER['SCRIPT_NAME']), E_USER_ERROR);
+// include class.secure.php to protect this file and the whole CMS!
+if (defined('WB_PATH')) {
+  if (defined('LEPTON_VERSION'))
+    include(WB_PATH.'/framework/class.secure.php');
 }
-// end include LEPTON class.secure.php
+else {
+  $oneback = "../";
+  $root = $oneback;
+  $level = 1;
+  while (($level < 10) && (!file_exists($root.'/framework/class.secure.php'))) {
+    $root .= $oneback;
+    $level += 1;
+  }
+  if (file_exists($root.'/framework/class.secure.php')) {
+    include($root.'/framework/class.secure.php');
+  }
+  else {
+    trigger_error(sprintf("[ <b>%s</b> ] Can't include class.secure.php!", $_SERVER['SCRIPT_NAME']), E_USER_ERROR);
+  }
+}
+// end include class.secure.php
 
 class dbEducatedQuestions extends dbConnectLE {
-	
+
 	const field_id						= 'question_id';
 	const field_name					= 'question_name';
 	const field_question			= 'question_question';
@@ -42,19 +43,19 @@ class dbEducatedQuestions extends dbConnectLE {
 	const field_created_when	= 'questions_created_when';
 	const field_update_by			= 'question_update_by';
 	const field_update_when		= 'question_update_when';
-	
+
 	const status_active				= 1;
 	const status_locked				= 2;
 	const status_deleted			= 0;
-	
+
 	var $status_array = array(
 		self::status_active		=> ed_status_active,
 		self::status_locked		=> ed_status_locked,
 		self::status_deleted	=> ed_status_deleted
 	);
-	
+
 	private $create_tables 		= false;
-	
+
 	public function __construct($create_tables=false) {
 		parent::__construct();
 		$this->create_tables = $create_tables;
@@ -64,7 +65,7 @@ class dbEducatedQuestions extends dbConnectLE {
 		$this->addFieldDefinition(self::field_question, "TEXT NOT NULL DEFAULT ''");
 		$this->addFieldDefinition(self::field_group, "TINYINT UNSIGNED NOT NULL DEFAULT '0'");
 		$this->addFieldDefinition(self::field_date_start, "DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00'");
-		$this->addFieldDefinition(self::field_date_stop, "DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00'");		
+		$this->addFieldDefinition(self::field_date_stop, "DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00'");
 		$this->addFieldDefinition(self::field_status, "TINYINT UNSIGNED NOT NULL DEFAULT '".self::status_active."'");
 		$this->addFieldDefinition(self::field_created_when, "DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00'");
 		$this->addFieldDefinition(self::field_update_by, "VARCHAR(64) NOT NULL DEFAULT 'SYSTEM'");
@@ -81,7 +82,7 @@ class dbEducatedQuestions extends dbConnectLE {
 } // dbEducatedQuestions
 
 class dbEducatedItems extends dbConnectLE {
-	
+
 	const field_id						= 'item_id';
 	const field_question_id		= 'item_question_id';
 	//const field_question			= 'item_question';
@@ -91,27 +92,27 @@ class dbEducatedItems extends dbConnectLE {
 	const field_status				= 'item_status';
 	const field_update_by			= 'item_update_by';
 	const field_update_when		= 'item_update_when';
-	
+
 	const status_active				= 1;
 	//const status_locked				= 2;
 	const status_deleted			= 0;
-	
+
 	var $status_array = array(
 		self::status_active		=> ed_status_active,
 		//self::status_locked		=> ed_status_locked,
 		self::status_deleted	=> ed_status_deleted
 	);
-	
+
 	const truth_true					= 1;
 	const truth_false					= 0;
-	
+
 	var $truth_array = array(
 		self::truth_true			=> ed_str_true,
 		self::truth_false			=> ed_str_false
 	);
-	
+
 	private $create_tables 		= false;
-	 
+
 	public function __construct($create_tables=false) {
 		parent::__construct();
 		$this->create_tables = $create_tables;
@@ -131,34 +132,34 @@ class dbEducatedItems extends dbConnectLE {
 			if (!$this->sqlCreateTable()) {
 				$this->setError(sprintf('[%s - %s] %s', __METHOD__, __LINE__, $this->getError()));
 			}
-		}	
+		}
 		// important: switch decoding OFF.
 		$this->setDecodeSpecialChars(false);
 	} // __construct()
-	
+
 } // class dbEducatedItems
 
 class dbEducatedGroups extends dbConnectLE {
-	
+
 	const field_id						= 'grp_id';
 	const field_name					= 'grp_name';
 	const field_description		= 'grp_description';
 	const field_status				= 'grp_status';
 	const field_update_by			= 'grp_update_by';
 	const field_update_when		= 'grp_update_when';
-	
+
 	const status_active				= 1;
 	const status_deleted			= 0;
 	const status_locked				= 2;
-	
+
 	var $status_array = array(
 		self::status_active		=> ed_status_active,
 		self::status_locked		=> ed_status_locked,
 		self::status_deleted	=> ed_status_deleted
 	);
-	
+
 	private $create_tables 		= false;
-	
+
 	public function __construct($create_tables=false) {
 		parent::__construct();
 		$this->create_tables = $create_tables;
@@ -178,11 +179,11 @@ class dbEducatedGroups extends dbConnectLE {
 		// important: switch decoding OFF.
 		$this->setDecodeSpecialChars(false);
 	} // __construct()
-	
+
 } // class dbEducatedGroups
 
 class dbEducatedConfig extends dbConnectLE {
-	
+
 	const field_id						= 'cfg_id';
 	const field_name					= 'cfg_name';
 	const field_type					= 'cfg_type';
@@ -192,10 +193,10 @@ class dbEducatedConfig extends dbConnectLE {
 	const field_status				= 'cfg_status';
 	const field_update_by			= 'cfg_update_by';
 	const field_update_when		= 'cfg_update_when';
-	
+
 	const status_active				= 1;
 	const status_deleted			= 0;
-	
+
 	const type_undefined			= 0;
 	const type_array					= 7;
   const type_boolean				= 1;
@@ -205,7 +206,7 @@ class dbEducatedConfig extends dbConnectLE {
   const type_path						= 5;
   const type_string					= 6;
   const type_url						= 8;
-  
+
   public $type_array = array(
   	self::type_undefined		=> '-UNDEFINED-',
   	self::type_array				=> 'ARRAY',
@@ -217,18 +218,18 @@ class dbEducatedConfig extends dbConnectLE {
   	self::type_string				=> 'STRING',
   	self::type_url					=> 'URL'
   );
-  
+
   private $createTables 		= false;
   private $message					= '';
-    
+
   const cfgQuestionShuffle	= 'cfgQuestionShuffle';
   const cfgRepliesCount			= 'cfgRepliesCount';
-  
+
   public $config_array = array(
   	array('ed_label_cfg_question_shuffle', self::cfgQuestionShuffle, self::type_boolean, 1, 'ed_desc_cfg_question_shuffle'),
-  	array('ed_label_cfg_replies_count', self::cfgRepliesCount, self::type_integer, 3, 'ed_desc_cfg_replies_count')  	
+  	array('ed_label_cfg_replies_count', self::cfgRepliesCount, self::type_integer, 3, 'ed_desc_cfg_replies_count')
   );
-  
+
   public function __construct($createTables = false) {
   	$this->createTables = $createTables;
   	parent::__construct();
@@ -259,14 +260,14 @@ class dbEducatedConfig extends dbConnectLE {
   	// important: switch decoding OFF.
 		$this->setDecodeSpecialChars(false);
   } // __construct()
-  
+
   public function setMessage($message) {
     $this->message = $message;
   } // setMessage()
 
   /**
     * Get Message from $this->message;
-    * 
+    *
     * @return STR $this->message
     */
   public function getMessage() {
@@ -275,20 +276,20 @@ class dbEducatedConfig extends dbConnectLE {
 
   /**
     * Check if $this->message is empty
-    * 
+    *
     * @return BOOL
     */
   public function isMessage() {
     return (bool) !empty($this->message);
   } // isMessage
-  
-  
+
+
   /**
    * Fuegt den Wert $new_value in die dbShortLinkConfig ein
-   * 
+   *
    * @param $new_value STR - Wert, der uebernommen werden soll
    * @param $id INT - ID des Datensatz, dessen Wert aktualisiert werden soll
-   * 
+   *
    * @return BOOL Ergebnis
    */
   public function setValue($new_value, $id) {
@@ -314,7 +315,7 @@ class dbEducatedConfig extends dbConnectLE {
   		foreach ($worker as $item) {
   			$data[] = trim($item);
   		};
-  		$value = implode(",", $data);  			
+  		$value = implode(",", $data);
   		break;
   	case self::type_boolean:
   		$value = (bool) $new_value;
@@ -326,7 +327,7 @@ class dbEducatedConfig extends dbConnectLE {
   		}
   		else {
   			$this->setMessage(sprintf(sl_msg_invalid_email, $new_value));
-  			return false;			
+  			return false;
   		}
   		break;
   	case self::type_float:
@@ -353,12 +354,12 @@ class dbEducatedConfig extends dbConnectLE {
   	}
   	return true;
   } // setValue()
-  
+
   /**
    * Gibt den angeforderten Wert zurueck
-   * 
-   * @param $name - Bezeichner 
-   * 
+   *
+   * @param $name - Bezeichner
+   *
    * @return WERT entsprechend des TYP
    */
   public function getValue($name) {
@@ -400,7 +401,7 @@ class dbEducatedConfig extends dbConnectLE {
   	endswitch;
   	return $result;
   } // getValue()
-  
+
   public function checkConfig() {
   	foreach ($this->config_array as $item) {
   		$where = array();
@@ -428,7 +429,7 @@ class dbEducatedConfig extends dbConnectLE {
   	}
   	return true;
   }
-	
+
 } // class dbEducatedConfig
 
 ?>

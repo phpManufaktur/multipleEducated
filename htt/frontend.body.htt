@@ -1,4 +1,3 @@
-<!-- $Id$ -->
 <div id="educated">
   <div class="{$class}">
     {$content}

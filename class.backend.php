@@ -2,40 +2,41 @@
 
 /**
  * multipleEducated
- * 
- * @author Ralf Hertsch (ralf.hertsch@phpmanufaktur.de)
+ *
+ * @author Ralf Hertsch <ralf.hertsch@phpmanufaktur.de>
  * @link http://phpmanufaktur.de
- * @copyright 2011
- * @license GNU GPL (http://www.gnu.org/licenses/gpl.html)
- * @version $Id$
- * 
- * FOR VERSION- AND RELEASE NOTES PLEASE LOOK AT INFO.TXT!
+ * @copyright 2009 - 2012
+ * @license MIT License (MIT) http://www.opensource.org/licenses/MIT
  */
 
-// try to include LEPTON class.secure.php to protect this file and the whole CMS!
-if (defined('WB_PATH')) {	
-	if (defined('LEPTON_VERSION')) include(WB_PATH.'/framework/class.secure.php');
-} elseif (file_exists($_SERVER['DOCUMENT_ROOT'].'/framework/class.secure.php')) {
-	include($_SERVER['DOCUMENT_ROOT'].'/framework/class.secure.php'); 
-} else {
-	$subs = explode('/', dirname($_SERVER['SCRIPT_NAME']));	$dir = $_SERVER['DOCUMENT_ROOT'];
-	$inc = false;
-	foreach ($subs as $sub) {
-		if (empty($sub)) continue; $dir .= '/'.$sub;
-		if (file_exists($dir.'/framework/class.secure.php')) { 
-			include($dir.'/framework/class.secure.php'); $inc = true;	break; 
-		} 
-	}
-	if (!$inc) trigger_error(sprintf("[ <b>%s</b> ] Can't include LEPTON class.secure.php!", $_SERVER['SCRIPT_NAME']), E_USER_ERROR);
+// include class.secure.php to protect this file and the whole CMS!
+if (defined('WB_PATH')) {
+  if (defined('LEPTON_VERSION'))
+    include(WB_PATH.'/framework/class.secure.php');
 }
-// end include LEPTON class.secure.php
+else {
+  $oneback = "../";
+  $root = $oneback;
+  $level = 1;
+  while (($level < 10) && (!file_exists($root.'/framework/class.secure.php'))) {
+    $root .= $oneback;
+    $level += 1;
+  }
+  if (file_exists($root.'/framework/class.secure.php')) {
+    include($root.'/framework/class.secure.php');
+  }
+  else {
+    trigger_error(sprintf("[ <b>%s</b> ] Can't include class.secure.php!", $_SERVER['SCRIPT_NAME']), E_USER_ERROR);
+  }
+}
+// end include class.secure.php
 
 global $parser;
 global $rhTools;
 global $dbEdQuestions;
 global $dbEdItems;
 global $dbEdGroups;
-global $dbEdCfg; 
+global $dbEdCfg;
 
 if (!is_object($parser)) $parser = new Dwoo();
 if (!is_object($rhTools)) $rhTools = new rhTools();
@@ -45,11 +46,11 @@ if (!is_object($dbEdGroups)) $dbEdGroups = new dbEducatedGroups();
 if (!is_object($dbEdCfg)) $dbEdCfg = new dbEducatedConfig();
 
 class backendEducated {
-	
+
 	const request_action 						= 'act';
 	const request_csv_export				= 'csvex';
 	const request_items							= 'its';
-	
+
 	const action_default						= 'def';
 	const action_question_edit			= 'qed';
 	const action_question_check			= 'qc';
@@ -59,8 +60,8 @@ class backendEducated {
 	const action_cfg								= 'cfg';
 	const action_cfg_check					= 'cfgc';
 	const action_info								= 'info';
-	
-	
+
+
 	private $tab_navigation_array = array(
 		self::action_question_edit			=> ed_tab_question_edit,
 		self::action_question_list			=> ed_tab_question_list,
@@ -68,23 +69,23 @@ class backendEducated {
 		self::action_cfg								=> ed_tab_config,
 		self::action_info								=> ed_tab_info
 	);
-	
+
 	private $page_link 					= '';
 	private $template_path			= '';
 	private $error							= '';
 	private $message						= '';
-	
+
 	private $swNavHide					= array();
-	
+
 	public function __construct() {
 		$this->page_link = ADMIN_URL.'/admintools/tool.php?tool=educated';
 		$this->template_path = WB_PATH . '/modules/' . basename(dirname(__FILE__)) . '/htt/' ;
-		
+
 	} // __construct()
-	
+
 	/**
     * Set $this->error to $error
-    * 
+    *
     * @param STR $error
     */
   public function setError($error) {
@@ -93,7 +94,7 @@ class backendEducated {
 
   /**
     * Get Error from $this->error;
-    * 
+    *
     * @return STR $this->error
     */
   public function getError() {
@@ -102,7 +103,7 @@ class backendEducated {
 
   /**
     * Check if $this->error is empty
-    * 
+    *
     * @return BOOL
     */
   public function isError() {
@@ -117,7 +118,7 @@ class backendEducated {
   }
 
   /** Set $this->message to $message
-    * 
+    *
     * @param STR $message
     */
   public function setMessage($message) {
@@ -126,7 +127,7 @@ class backendEducated {
 
   /**
     * Get Message from $this->message;
-    * 
+    *
     * @return STR $this->message
     */
   public function getMessage() {
@@ -135,13 +136,13 @@ class backendEducated {
 
   /**
     * Check if $this->message is empty
-    * 
+    *
     * @return BOOL
     */
   public function isMessage() {
     return (bool) !empty($this->message);
   } // isMessage
-  
+
   /**
    * Return Version of Module
    *
@@ -151,7 +152,7 @@ class backendEducated {
     // read info.php into array
     $info_text = file(WB_PATH.'/modules/'.basename(dirname(__FILE__)).'/info.php');
     if ($info_text == false) {
-      return -1; 
+      return -1;
     }
     // walk through array
     foreach ($info_text as $item) {
@@ -159,16 +160,16 @@ class backendEducated {
         // split string $module_version
         $value = explode('=', $item);
         // return floatval
-        return floatval(preg_replace('([\'";,\(\)[:space:][:alpha:]])', '', $value[1])); 
-      } 
+        return floatval(preg_replace('([\'";,\(\)[:space:][:alpha:]])', '', $value[1]));
+      }
     }
     return -1;
   } // getVersion()
-  
-  
+
+
   /**
    * Verhindert XSS Cross Site Scripting
-   * 
+   *
    * @param REFERENCE $_REQUEST Array
    * @return $request
    */
@@ -181,13 +182,13 @@ class backendEducated {
   	}
 	  return $request;
   } // xssPrevent()
-	
+
   public function action() {
   	$html_allowed = array();
   	foreach ($_REQUEST as $key => $value) {
   		if (!in_array($key, $html_allowed)) {
     		$_REQUEST[$key] = $this->xssPrevent($value);
-  		} 
+  		}
   	}
     isset($_REQUEST[self::request_action]) ? $action = $_REQUEST[self::request_action] : $action = self::action_default;
   	switch ($action):
@@ -218,11 +219,11 @@ class backendEducated {
   		break;
   	endswitch;
   } // action
-	
-  	
+
+
   /**
    * Erstellt eine Navigationsleiste
-   * 
+   *
    * @param $action - aktives Navigationselement
    * @return STR Navigationsleiste
    */
@@ -230,8 +231,8 @@ class backendEducated {
   	$result = '';
   	foreach ($this->tab_navigation_array as $key => $value) {
   		if (!in_array($key, $this->swNavHide)) {
-	  		($key == $action) ? $selected = ' class="selected"' : $selected = ''; 
-	  		$result .= sprintf(	'<li%s><a href="%s">%s</a></li>', 
+	  		($key == $action) ? $selected = ' class="selected"' : $selected = '';
+	  		$result .= sprintf(	'<li%s><a href="%s">%s</a></li>',
 	  												$selected,
 	  												sprintf('%s&%s=%s', $this->page_link, self::request_action, $key),
 	  												$value
@@ -241,13 +242,13 @@ class backendEducated {
   	$result = sprintf('<ul class="nav_tab">%s</ul>', $result);
   	return $result;
   } // getNavigation()
-  
+
   /**
    * Ausgabe des formatieren Ergebnis mit Navigationsleiste
-   * 
+   *
    * @param $action - aktives Navigationselement
    * @param $content - Inhalt
-   * 
+   *
    * @return ECHO RESULT
    */
   public function show($action, $content) {
@@ -272,16 +273,16 @@ class backendEducated {
   	$data = array(
   		'release'	=> $this->getVersion(),
   		'qrcode'	=> WB_URL.'/modules/'.basename(dirname(__FILE__)).'/images/qr-phpmanufaktur-135.png',
-  		'img'			=> WB_URL.'/modules/'.basename(dirname(__FILE__)).'/images/multiple-educated-400.jpg' 
+  		'img'			=> WB_URL.'/modules/'.basename(dirname(__FILE__)).'/images/multiple-educated-400.jpg'
   	);
   	return $parser->get($this->template_path.'backend.about.htt', $data);
   } // dlgInfo()
-  
+
   public function dlgQuestionEdit() {
   	global $parser;
   	global $dbEdQuestions;
   	global $dbEdGroups;
-  	
+
   	$form_name = 'form_edit';
   	((isset($_REQUEST[dbEducatedQuestions::field_id])) && (!empty($_REQUEST[dbEducatedQuestions::field_id]))) ? $id = $_REQUEST[dbEducatedQuestions::field_id] : $id = -1;
   	$items = '';
@@ -293,7 +294,7 @@ class backendEducated {
 		$groups = array();
 		if (!$dbEdGroups->sqlExec($SQL, $groups)) {
 			$this->setError(sprintf('[%s - %s] %s', __METHOD__, __LINE__, $dbEdGroups->getError()));
-			return false;  								
+			return false;
 		}
 		if (sizeof($groups) < 1) {
 			// Es sind keine Gruppen definiert
@@ -323,11 +324,11 @@ class backendEducated {
   			$question[dbEducatedQuestions::field_id] = $id;
   			$question[dbEducatedQuestions::field_status] = dbEducatedQuestions::status_active;
   		}
-  		
+
   		$row_1 = new Dwoo_Template_File($this->template_path.'backend.question.edit.row_1.htt');
   		$row_2 = new Dwoo_Template_File($this->template_path.'backend.question.edit.row_2.htt');
   		$row_3 = new Dwoo_Template_File($this->template_path.'backend.question.edit.row_3.htt');
-  		
+
 //$row_1 = '<tr><td colspan="3">&nbsp;</td></tr><tr><td class="intro" colspan="3">%s</td></tr><tr><td colspan="3">&nbsp;</td></tr>'."\n";
 //$row_2 = '<tr><td class="ed_label">%s</td><td colspan="2">%s</td></tr>'."\n";
 //$row_3 = '<tr class="%s"><td class="ed_label">%s</td><td>%s</td><td>%s</td></tr>'."\n";
@@ -335,11 +336,11 @@ class backendEducated {
   		if ($id != -1) {
   			$data = array(
   				'label'	=> '',
-  				'item'	=> sprintf('<b>#%05d</b> - %s', 
+  				'item'	=> sprintf('<b>#%05d</b> - %s',
   														$question[dbEducatedQuestions::field_id],
   														$dbEdQuestions->mySQLdate2datum($question[dbEducatedQuestions::field_created_when]))
   			);
-  			$items .= $parser->get($row_2, $data); 
+  			$items .= $parser->get($row_2, $data);
   		}
   		// Bezeichner
   		(isset($_REQUEST[dbEducatedQuestions::field_name])) ? $name = $_REQUEST[dbEducatedQuestions::field_name] : $name = $question[dbEducatedQuestions::field_name];
@@ -370,11 +371,11 @@ class backendEducated {
   			'item'	=> $grp
   		);
   		$items .= $parser->get($row_2, $data);
-  											
+
 			// Gueltigkeitsbereich
 			if ((isset($_REQUEST[dbEducatedQuestions::field_date_start])) && (!empty($_REQUEST[dbEducatedQuestions::field_date_start]))) {
 			  if (($dt = strtotime($_REQUEST[dbEducatedQuestions::field_date_start])) === false) {
-			  	$date_start = '';				  		
+			  	$date_start = '';
 			  }
 			  else {
 			  	$date_start = date('d.m.Y', mktime(0, 0, 0, date('m', $dt), date('d', $dt), date('Y', $dt)));
@@ -383,11 +384,11 @@ class backendEducated {
 			else {
 			 	if ($question[dbEducatedQuestions::field_date_start] != '0000-00-00 00:00:00') {
 			 		if (($dt = strtotime($question[dbEducatedQuestions::field_date_start])) === false) {
-			  		$date_start = '';				  		
+			  		$date_start = '';
 			  	}
 			  	else {
 			  		$date_start = date('d.m.Y', mktime(0, 0, 0, date('m', $dt), date('d', $dt), date('Y', $dt)));
-			  	}			 		
+			  	}
 			 	}
 			 	else {
 			 		$date_start = '';
@@ -395,7 +396,7 @@ class backendEducated {
 			}
 			if ((isset($_REQUEST[dbEducatedQuestions::field_date_stop])) && (!empty($_REQUEST[dbEducatedQuestions::field_date_stop]))) {
 			  if (($dt = strtotime($_REQUEST[dbEducatedQuestions::field_date_stop])) === false) {
-			  	$date_stop = '';				  		
+			  	$date_stop = '';
 			  }
 			  else {
 			  	$date_stop = date('d.m.Y', mktime(0, 0, 0, date('m', $dt), date('d', $dt), date('Y', $dt)));
@@ -404,11 +405,11 @@ class backendEducated {
 			else {
 			 	if ($question[dbEducatedQuestions::field_date_stop] != '0000-00-00 00:00:00') {
 			 		if (($dt = strtotime($question[dbEducatedQuestions::field_date_stop])) === false) {
-			  		$date_stop = '';				  		
+			  		$date_stop = '';
 			  	}
 			  	else {
 			  		$date_stop = date('d.m.Y', mktime(0, 0, 0, date('m', $dt), date('d', $dt), date('Y', $dt)));
-			  	}			 		
+			  	}
 			 	}
 			 	else {
 			 		$date_stop = '';
@@ -457,14 +458,14 @@ class backendEducated {
 															$status,
 															sprintf(ed_str_changed_by,
 																			$question[dbEducatedQuestions::field_update_by],
-																			$dbEdQuestions->mySQLdate2datum($question[dbEducatedQuestions::field_update_when]))) 
+																			$dbEdQuestions->mySQLdate2datum($question[dbEducatedQuestions::field_update_when])))
 				);
 				$items .= $parser->get($row_2, $data);
 			}
 			else {
 				$data = array(
 					'label'	=> ed_label_question_status,
-					'item'	=> $status 
+					'item'	=> $status
 				);
 				$items .= $parser->get($row_2, $data);
 			}
@@ -480,7 +481,7 @@ class backendEducated {
 			if (!$dbEducatedItems->sqlExec($SQL, $replies)) {
 				$this->setError(sprintf('[%s - %s] %s', __METHOD__, __LINE__, $dbEducatedItems->getError()));
 				return false;
-			} 
+			}
 			$config = new dbEducatedConfig();
 			$max_replies = $config->getValue(dbEducatedConfig::cfgRepliesCount);
 			if (sizeof($replies) > $max_replies) {
@@ -496,8 +497,8 @@ class backendEducated {
 				'text'		=> ''
 			);
 			$items .= $parser->get($row_3, $data);
-			$flipFlop = true; 
-			for ($i=0; $i < $max_replies; $i++) { 
+			$flipFlop = true;
+			for ($i=0; $i < $max_replies; $i++) {
 				if ($flipFlop) {
   		  	$flipFlop = false; $flip = 'flip';
   			}
@@ -520,7 +521,7 @@ class backendEducated {
 					$answer = $_REQUEST[dbEducatedItems::field_answer.'_'.$i];
 				}
 				elseif (isset($replies[$i][dbEducatedItems::field_answer])) {
-					$answer = $replies[$i][dbEducatedITems::field_answer]; 
+					$answer = $replies[$i][dbEducatedITems::field_answer];
 				}
 				else {
 					$answer = '';
@@ -569,7 +570,7 @@ class backendEducated {
 					'text'	=> sprintf(	'<textarea name="%s_%d">%s</textarea>',
 															dbEducatedItems::field_explain,
 															$i,
-															$explain) 
+															$explain)
 				);
 				$items .= $parser->get($row_3, $data);
 			}
@@ -598,13 +599,13 @@ class backendEducated {
   	);
   	return $parser->get($this->template_path.'backend.question.edit.htt', $data);
   } // dlgQuestionEdit()
-  
+
   public function QuestionEditCheck() {
   	global $dbEdQuestions;
   	global $dbEdItems;
   	global $dbEdCfg;
   	global $rhTools;
-  	
+
   	$message = '';
   	$update = false;
   	$error = false;
@@ -615,7 +616,7 @@ class backendEducated {
   		$question = array();
   		if (!$dbEdQuestions->sqlSelectRecord($where, $question)) {
   			$this->setError(sprintf('[%s - %s] %s', __METHOD__, __LINE__, $dbEdQuestions->getError()));
-  			return false;	
+  			return false;
   		}
   		if (sizeof($question) < 1) {
   			$this->setError(sprintf(ed_error_question_id_not_exists, __METHOD__, __LINE__, $id));
@@ -635,7 +636,7 @@ class backendEducated {
   		if (($dt = strtotime($_REQUEST[dbEducatedQuestions::field_date_start])) === false) {
 			  $date_start = '0000-00-00 00:00:00';
 			  $error = true;
-			  $message .= sprintf(ed_msg_invalid_date, $_REQUEST[dbEducatedQuestions::field_date_start]);				  		
+			  $message .= sprintf(ed_msg_invalid_date, $_REQUEST[dbEducatedQuestions::field_date_start]);
 			}
 			else {
 				$date_start = date('Y-m-d H:i:s', mktime(0, 0, 0, date('m', $dt), date('d', $dt), date('Y', $dt)));
@@ -649,7 +650,7 @@ class backendEducated {
   		if (($dt = strtotime($_REQUEST[dbEducatedQuestions::field_date_stop])) === false) {
 			  $date_stop = '0000-00-00 00:00:00';
 			  $error = true;
-			  $message .= sprintf(ed_msg_invalid_date, $_REQUEST[dbEducatedQuestions::field_date_stop]);				  		
+			  $message .= sprintf(ed_msg_invalid_date, $_REQUEST[dbEducatedQuestions::field_date_stop]);
 			}
 			else {
 				$date_stop = date('Y-m-d H:i:s', mktime(23, 59, 59, date('m', $dt), date('d', $dt), date('Y', $dt)));
@@ -736,7 +737,7 @@ class backendEducated {
   		$data[dbEducatedQuestions::field_status] = $status;
   		$data[dbEducatedQuestions::field_update_when] = date('Y-m-d H:i:s');
   		$data[dbEducatedQuestions::field_update_by] = $rhTools->getDisplayName();
-  		
+
   		if ($id == -1) {
 	  		// neuen Datensatz einfuegen
 	  		$data[dbEducatedQuestions::field_created_when] = date('Y-m-d H:i:s');
@@ -762,7 +763,7 @@ class backendEducated {
   		unset($_REQUEST[dbEducatedQuestions::field_group]);
   		unset($_REQUEST[dbEducatedQuestions::field_date_start]);
   		unset($_REQUEST[dbEducatedQuestions::field_date_stop]);
-  		unset($_REQUEST[dbEducatedQuestions::field_status]);  			
+  		unset($_REQUEST[dbEducatedQuestions::field_status]);
   	}
   	elseif (!$update) {
   		$message .= ed_msg_quest_no_change;
@@ -770,7 +771,7 @@ class backendEducated {
   	// Flags zuruecksetzen
   	$update = false;
   	$error = false;
-  	
+
   	// ANTWORTEN AUSLESEN
 		$SQL = sprintf(	"SELECT * FROM %s WHERE %s='%s' AND %s!='%s'",
 										$dbEdItems->getTableName(),
@@ -797,7 +798,7 @@ class backendEducated {
 					$item = $dbEdItems->getFields();
 					$item[dbEducatedITems::field_id] = -1; // neuer Datensatz
 					$item[dbEducatedItems::field_truth] = dbEducatedItems::truth_false;
-					$item[dbEducatedItems::field_status] = dbEducatedItems::status_active;				
+					$item[dbEducatedItems::field_status] = dbEducatedItems::status_active;
 				}
 				else {
 					// Datensatz existiert bereits
@@ -900,12 +901,12 @@ class backendEducated {
 		$this->setMessage($message);
   	return $this->dlgQuestionEdit();
   } // QuestionEditCheck()
-  
+
   public function dlgQuestionList() {
   	global $dbEdQuestions;
   	global $dbEdGroups;
   	global $parser;
-  	
+
   	$SQL = sprintf(	"SELECT * FROM %s WHERE %s!='%s'",
   									$dbEdQuestions->getTableName(),
   									dbEducatedQuestions::field_status,
@@ -930,7 +931,7 @@ class backendEducated {
   	foreach ($grps as $grp) {
   		$groups[$grp[dbEducatedGroups::field_id]] = $grp[dbEducatedGroups::field_name];
   	}
-  	
+
   	$items = '';
  //$header = '<tr><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th><th>%s</th></tr>';
  //$row = '<tr class="%s"><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>';
@@ -978,7 +979,7 @@ class backendEducated {
   			'locked'		=> $locked,
   			'created'		=> date('d.m.Y', strtotime($question[dbEducatedQuestions::field_created_when])),
   			'group'			=> $groups[$question[dbEducatedQuestions::field_group]],
-  			'name'			=> sprintf(	'<a href="%s&%s=%s&%s=%s">%s</a>', 
+  			'name'			=> sprintf(	'<a href="%s&%s=%s&%s=%s">%s</a>',
   															$this->page_link,
   															self::request_action,
   															self::action_question_edit,
@@ -987,7 +988,7 @@ class backendEducated {
   															$question[dbEducatedQuestions::field_name]),
   			'question'	=> $question[dbEducatedQuestions::field_question],
   			'start'			=> $date_start,
-  			'end'				=> $date_stop				
+  			'end'				=> $date_stop
   		);
   		$items .= $parser->get($row, $data);
   	}
@@ -1005,16 +1006,16 @@ class backendEducated {
   	);
   	return $parser->get($this->template_path.'backend.question.list.htt', $data);
   } // dlgQuestionList()
-	
+
   /**
    * Dialog zum Bearbeiten und Hinzufuegen von Gruppen
-   * 
+   *
    * @return STR DIALOG
    */
   public function dlgGroupsEdit() {
   	global $dbEdGroups;
   	global $parser;
-  	
+
   	$form_name = 'grp_edit';
   	((isset($_REQUEST[dbEducatedGroups::field_id])) && (!empty($_REQUEST[dbEducatedGroups::field_id]))) ? $gid = $_REQUEST[dbEducatedGroups::field_id] : $gid = -1;
   	// Daten auslesen
@@ -1035,8 +1036,8 @@ class backendEducated {
   		'update' => ed_label_last_update
   	);
   	$items .= $parser->get($this->template_path.'backend.groups.edit.header.htt', $data);
-  	
-		// vorhandene Gruppen auflisten  									
+
+		// vorhandene Gruppen auflisten
   	foreach ($groups as $group) {
   		$id = $group[dbEducatedGroups::field_id];
   		(isset($_REQUEST[dbEducatedGroups::field_id.'_'.$id])) ? $name = $_REQUEST[dbEducatedGroups::field_name.'_'.$id] : $name = $group[dbEducatedGroups::field_name];
@@ -1045,7 +1046,7 @@ class backendEducated {
   		(isset($_REQUEST[dbEducatedGroups::field_status.'_'.$id])) ? $stat = $_REQUEST[dbEducatedGroups::field_status.'_'.$id] : $stat = $group[dbEducatedGroups::field_status];
   		foreach ($dbEdGroups->status_array as $key => $value) {
  				($key == $stat) ? $selected = ' selected="selected"' : $selected = '';
- 				$status .= sprintf('<option value="%s"%s>%s</option>', $key, $selected, $value);  			
+ 				$status .= sprintf('<option value="%s"%s>%s</option>', $key, $selected, $value);
   		}
   		$status = sprintf('<select name="%s">%s</select>', dbEducatedGroups::field_status.'_'.$id, $status);
   		$data = array(
@@ -1057,9 +1058,9 @@ class backendEducated {
   		);
   		$items .= $parser->get($row, $data);
   	}
-  	// neue Gruppe hinzufuegen		
+  	// neue Gruppe hinzufuegen
   	$items .= $parser->get($this->template_path.'backend.groups.edit.add.htt', array('intro' => ed_intro_add_group));
- 		
+
   	(isset($_REQUEST[dbEducatedGroups::field_name.'_add'])) ? $name = $_REQUEST[dbEducatedGroups::field_name.'_add'] : $name = '';
   	(isset($_REQUEST[dbEducatedGroups::field_description.'_add'])) ? $desc = $_REQUEST[dbEducatedGroups::field_description.'_add'] : $desc = '';
   	$data = array(
@@ -1093,14 +1094,14 @@ class backendEducated {
   	);
   	return $parser->get($this->template_path.'backend.groups.edit.htt', $data);
   } // dlgGroupsEdit()
-  
+
   /**
    * Prueft Aenderungen an Gruppen und Neueintraege
    */
   public function GroupsEditCheck() {
   	global $dbEdGroups;
   	global $rhTools;
-  	
+
   	$message = '';
   	// Pruefen, ob Aenderungen an bestehenden Gruppen durchgefuehrt wurden
   	$groups = array();
@@ -1129,7 +1130,7 @@ class backendEducated {
   			$result = array();
 				if (!$dbEdGroups->sqlExec($SQL, $result)) {
 					$this->setError(sprintf('[%s - %s] %s', __METHOD__, __LINE__, $dbEdGroups->getError()));
-					return false;  											
+					return false;
 				}
 				if (sizeof($result) > 0) {
 					$message .= sprintf(ed_msg_group_name_exists, $result[0][dbEducatedGroups::field_name]);
@@ -1170,9 +1171,9 @@ class backendEducated {
   		}
   		unset($_REQUEST[dbEducatedGroups::field_name.'_'.$id]);
   		unset($_REQUEST[dbEducatedGroups::field_description.'_'.$id]);
-  		unset($_REQUEST[dbEducatedGroups::field_status.'_'.$id]);	
+  		unset($_REQUEST[dbEducatedGroups::field_status.'_'.$id]);
   	}
-  	
+
   	// Neue Gruppe?
   	if ((isset($_REQUEST[dbEducatedGroups::field_name.'_add'])) && (!empty($_REQUEST[dbEducatedGroups::field_name.'_add']))) {
   		// es soll eine neue Gruppe hinzugefuegt werden
@@ -1181,7 +1182,7 @@ class backendEducated {
   		if (strlen($name) < 4) {
   			// Der Gruppen Name sollte mindestens 3 Zeichen enthalten
   			$message .= ed_msg_group_name_too_short;
-  			$add = false; 
+  			$add = false;
   		}
   		(isset($_REQUEST[dbEducatedGroups::field_description.'_add'])) ? $desc = $_REQUEST[dbEducatedGroups::field_description.'_add'] : $desc = '';
   		if (empty($desc)) {
@@ -1200,7 +1201,7 @@ class backendEducated {
   			$result = array();
 				if (!$dbEdGroups->sqlExec($SQL, $result)) {
 					$this->setError(sprintf('[%s - %s] %s', __METHOD__, __LINE__, $dbEdGroups->getError()));
-					return false;  											
+					return false;
 				}
 				if (sizeof($result) > 0) {
 					$message .= sprintf(ed_msg_group_name_exists, $result[0][dbEducatedGroups::field_name]);
@@ -1219,7 +1220,7 @@ class backendEducated {
 	  			$new_id = -1;
 	  			if (!$dbEdGroups->sqlInsertRecord($data, $new_id)) {
 	  				$this->setError(sprintf('[%s - %s] %s', __METHOD__, __LINE__, $dbEdGroups->getError()));
-	  				return false; 
+	  				return false;
 	  			}
 	  			$message .= sprintf(ed_msg_group_add_group, $name, $new_id);
 				}
@@ -1229,16 +1230,16 @@ class backendEducated {
   	$this->setMessage($message);
   	return $this->dlgGroupsEdit();
   } // GroupsEditCheck()
-  
+
   /**
 	 * Dialog zum Bearbeiten der Konfigurationseinstellungen
-	 * 
+	 *
 	 * @return STR Dialog
 	 */
 	public function editConfig() {
 		global $parser;
 		global $dbEdCfg;
-		
+
 		$SQL = sprintf(	"SELECT * FROM %s WHERE NOT %s='%s' ORDER BY %s",
 										$dbEdCfg->getTableName(),
 										dbEducatedConfig::field_status,
@@ -1253,12 +1254,12 @@ class backendEducated {
 		$data = array(
 			'name'	=> '',
 			'value'	=> ed_header_value,
-			'desc'	=> ed_header_description 
+			'desc'	=> ed_header_description
 		);
 		$items = $parser->get($this->template_path.'backend.cfg.header.htt', $data);
-		
+
 		$row = new Dwoo_Template_File($this->template_path.'backend.cfg.row.htt');
-		
+
 		// bestehende Eintraege auflisten
 		foreach ($config as $entry) {
 			$id = $entry[dbEducatedConfig::field_id];
@@ -1266,8 +1267,8 @@ class backendEducated {
 			$label = constant($entry[dbEducatedConfig::field_label]);
 			$bezeichner = $entry[dbEducatedConfig::field_name];
 			$typ = $dbEdCfg->type_array[$entry[dbEducatedConfig::field_type]];
-			(isset($_REQUEST[dbEducatedConfig::field_value.'_'.$id])) ? 
-				$val = $_REQUEST[dbEducatedConfig::field_value.'_'.$id] : 
+			(isset($_REQUEST[dbEducatedConfig::field_value.'_'.$id])) ?
+				$val = $_REQUEST[dbEducatedConfig::field_value.'_'.$id] :
 				$val = $entry[dbEducatedConfig::field_value];
 			$value = sprintf(	'<input type="text" name="%s_%s" value="%s" />', dbEducatedConfig::field_value, $id,	$val);
 			$desc = constant($entry[dbEducatedConfig::field_description]);
@@ -1280,14 +1281,14 @@ class backendEducated {
 //$items .= sprintf($row, $label, $bezeichner, $typ, $value, $desc);
 		}
 		$items_value = implode(",", $count);
-		
+
 		// Mitteilungen anzeigen
 		if ($this->isMessage()) {
 			$intro = sprintf('<div class="message">%s</div>', $this->getMessage());
 		}
 		else {
 			$intro = sprintf('<div class="intro">%s</div>', ed_intro_cfg);
-		}		
+		}
 		$data = array(
 			'form_name'						=> 'konfiguration',
 			'form_action'					=> $this->page_link,
@@ -1304,18 +1305,18 @@ class backendEducated {
 		);
 		return $parser->get($this->template_path.'backend.cfg.htt', $data);
 	} // editConfig()
-	
+
 	/**
 	 * Ueberprueft Aenderungen die im Dialog editKonfiguration() vorgenommen wurden
 	 * und aktualisiert die entsprechenden Datensaetze.
 	 * Fuegt neue Datensaetze ein.
-	 * 
+	 *
 	 * @return STR DIALOG editConfig()
 	 */
 	public function checkConfig() {
 		global $dbEdCfg;
 		global $rhTools;
-		
+
 		$message = '';
 		// ueberpruefen, ob ein Eintrag geaendert wurde
 		if ((isset($_REQUEST[self::request_items])) && (!empty($_REQUEST[self::request_items]))) {
@@ -1324,7 +1325,7 @@ class backendEducated {
 				if (isset($_REQUEST[dbEducatedConfig::field_value.'_'.$id])) {
 					$value = $_REQUEST[dbEducatedConfig::field_value.'_'.$id];
 					$where = array();
-					$where[dbEducatedConfig::field_id] = $id; 
+					$where[dbEducatedConfig::field_id] = $id;
 					$config = array();
 					if (!$dbEdCfg->sqlSelectRecord($where, $config)) {
 						$this->setError(sprintf('[%s - %s] %s', __METHOD__, __LINE__, $dbEdCfg->getError()));
@@ -1350,8 +1351,8 @@ class backendEducated {
 						}
 					}
 				}
-			}		
-		}		
+			}
+		}
 		// ueberpruefen, ob ein neuer Eintrag hinzugefuegt wurde
 		if ((isset($_REQUEST[dbEducatedConfig::field_name])) && (!empty($_REQUEST[dbEducatedConfig::field_name]))) {
 			// pruefen ob dieser Konfigurationseintrag bereits existiert
@@ -1391,9 +1392,9 @@ class backendEducated {
 					$id = -1;
 					if (!$dbEdCfg->sqlInsertRecord($data, $id)) {
 						$this->setError(sprintf('[%s - %s] %s', __METHOD__, __LINE__, $dbEdCfg->getError()));
-						return false; 
+						return false;
 					}
-					$message .= sprintf(ed_msg_cfg_add_success, $id, $data[dbEducatedConfig::field_name]);		
+					$message .= sprintf(ed_msg_cfg_add_success, $id, $data[dbEducatedConfig::field_name]);
 				}
 				else {
 					// Daten unvollstaendig
@@ -1410,16 +1411,16 @@ class backendEducated {
 			$csvFile = WB_PATH.MEDIA_DIRECTORY.'/'.date('ymd-His').'-educated-cfg.csv';
 			if (!$dbEdCfg->csvExport($where, $csv, $csvFile)) {
 				$this->setError(sprintf('[%s - %s] %s', __METHOD__, __LINE__, $dbEdCfg->getError()));
-				return false; 
+				return false;
 			}
 			$message .= sprintf(ed_msg_cfg_csv_export, basename($csvFile));
 		}
-		
+
 		if (!empty($message)) $this->setMessage($message);
 		return $this->editConfig();
 	} // checkConfig()
-  
-  
+
+
 } // class backendEducated
 
 ?>

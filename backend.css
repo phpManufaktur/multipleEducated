@@ -1,8 +1,11 @@
 /**
-  Copyright (c) 2009, Ralf Hertsch
-
-  $Id$
-**/
+ * multipleEducated
+ *
+ * @author Ralf Hertsch <ralf.hertsch@phpmanufaktur.de>
+ * @link http://phpmanufaktur.de
+ * @copyright 2009 - 2012
+ * @license MIT License (MIT) http://www.opensource.org/licenses/MIT
+ */
 
 body,td,th,input,textarea {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
