@@ -5,7 +5,14 @@ http://phpManufaktur.de - ralf.hertsch@phpManufaktur.de
 
 Release 0.16 - 2012-06-20
 
-* change WebsiteBaker version check
+* changed WebsiteBaker version check
+* added CHANGELOG
+* removed info.txt
+* changed license from GNU GPL to MIT license
+* added LICENSE
+* inserted check if file is saved in UTF-8 format to the language files
+* updated all header informations
+* added README.md
 
 Release 0.15 - 2011-08-02
 
