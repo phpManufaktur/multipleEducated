@@ -31,15 +31,12 @@ else {
 }
 // end include class.secure.php
 
-global $parser;
-global $rhTools;
+
 global $dbEdQuestions;
 global $dbEdItems;
 global $dbEdGroups;
 global $dbEdCfg;
 
-if (!is_object($parser)) $parser = new Dwoo();
-if (!is_object($rhTools)) $rhTools = new rhTools();
 if (!is_object($dbEdQuestions)) $dbEdQuestions = new dbEducatedQuestions();
 if (!is_object($dbEdItems)) $dbEdItems = new dbEducatedItems();
 if (!is_object($dbEdGroups)) $dbEdGroups = new dbEducatedGroups();
@@ -604,7 +601,6 @@ class backendEducated {
   	global $dbEdQuestions;
   	global $dbEdItems;
   	global $dbEdCfg;
-  	global $rhTools;
 
   	$message = '';
   	$update = false;
@@ -736,7 +732,7 @@ class backendEducated {
   		}
   		$data[dbEducatedQuestions::field_status] = $status;
   		$data[dbEducatedQuestions::field_update_when] = date('Y-m-d H:i:s');
-  		$data[dbEducatedQuestions::field_update_by] = $rhTools->getDisplayName();
+  		$data[dbEducatedQuestions::field_update_by] = isset($_SESSION['DISPLAY_NAME']) ? $_SESSION['DISPLAY_NAME'] : 'SYSTEM';
 
   		if ($id == -1) {
 	  		// neuen Datensatz einfuegen
@@ -850,7 +846,7 @@ class backendEducated {
 					// Datensatz ist neu oder wurde geaendert
 					$item_id = $item[dbEducatedItems::field_id];
 					unset($item[dbEducatedItems::field_id]);
-					$item[dbEducatedItems::field_update_by] = $rhTools->getDisplayName();
+					$item[dbEducatedItems::field_update_by] = isset($_SESSION['DISPLAY_NAME']) ? $_SESSION['DISPLAY_NAME'] : 'SYSTEM';
 					$item[dbEducatedItems::field_update_when] = date('Y-m-d H:i:s');
 					$item[dbEducatedItems::field_question_id] = $id;
 					if ($item_id == -1) {
@@ -1100,7 +1096,6 @@ class backendEducated {
    */
   public function GroupsEditCheck() {
   	global $dbEdGroups;
-  	global $rhTools;
 
   	$message = '';
   	// Pruefen, ob Aenderungen an bestehenden Gruppen durchgefuehrt wurden
@@ -1161,7 +1156,7 @@ class backendEducated {
   			$data[dbEducatedGroups::field_name] = $name;
   			$data[dbEducatedGroups::field_description] = $desc;
   			$data[dbEducatedGroups::field_status] = $status;
-  			$data[dbEducatedGroups::field_update_by] = $rhTools->getDisplayName();
+  			$data[dbEducatedGroups::field_update_by] = isset($_SESSION['DISPLAY_NAME']) ? $_SESSION['DISPLAY_NAME'] : 'SYSTEM';
   			$data[dbEducatedGroups::field_update_when] = date('Y-m-d H:i:s');
   			if (!$dbEdGroups->sqlUpdateRecord($data, $where)) {
   				$this->setError(sprintf('[%s - %s] %s', __METHOD__, __LINE__, $dbEdGroups->getError()));
@@ -1215,7 +1210,7 @@ class backendEducated {
 	  			$data[dbEducatedGroups::field_name] = $name;
 	  			$data[dbEducatedGroups::field_description] = $desc;
 	  			$data[dbEducatedGroups::field_status] = dbEducatedGroups::status_active;
-	  			$data[dbEducatedGroups::field_update_by] = $rhTools->getDisplayName();
+	  			$data[dbEducatedGroups::field_update_by] = isset($_SESSION['DISPLAY_NAME']) ? $_SESSION['DISPLAY_NAME'] : 'SYSTEM';
 	  			$data[dbEducatedGroups::field_update_when] = date('Y-m-d H:i:s');
 	  			$new_id = -1;
 	  			if (!$dbEdGroups->sqlInsertRecord($data, $new_id)) {
@@ -1315,7 +1310,6 @@ class backendEducated {
 	 */
 	public function checkConfig() {
 		global $dbEdCfg;
-		global $rhTools;
 
 		$message = '';
 		// ueberpruefen, ob ein Eintrag geaendert wurde
@@ -1387,7 +1381,7 @@ class backendEducated {
 					$data[dbEducatedConfig::field_description] = $_REQUEST[dbEducatedConfig::field_description];
 					unset($_REQUEST[dbEducatedConfig::field_description]);
 					$data[dbEducatedConfig::field_status] = dbEducatedConfig::status_active;
-					$data[dbEducatedConfig::field_update_by] = $rhTools->getDisplayName();
+					$data[dbEducatedConfig::field_update_by] = isset($_SESSION['DISPLAY_NAME']) ? $_SESSION['DISPLAY_NAME'] : 'SYSTEM';
 					$data[dbEducatedConfig::field_update_when] = date('Y-m-d H:i:s');
 					$id = -1;
 					if (!$dbEdCfg->sqlInsertRecord($data, $id)) {

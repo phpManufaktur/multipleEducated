@@ -116,7 +116,6 @@ class checkDroplets {
 			// Droplets not installed!
 			return false;
 		}
-		$tools = new rhTools();
 		// walk through array
 		foreach ($names as $dropfile) {
 			//$droplet = addslashes($this->getDropletCodeFromFile($dropfile));

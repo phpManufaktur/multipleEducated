@@ -122,6 +122,7 @@ define('ed_msg_cfg_add_success',				'<p>Configuration data record with <b>ID #%0
 define('ed_msg_cfg_add_incomplete',			'<p>The configuration data record just added is incomplete! Please check your entries!</p>');
 define('ed_msg_cfg_csv_export',					'<p>Configuration data have been saved as <b>%s</b> in directory /MEDIA.</p>');
 define('ed_msg_invalid_date',						'<p>Date <b>%s</b> is invalid. Please checck your entry!</p>');
+define('sl_msg_invalid_email',					'<p>The E-Mail address <b>%s</b> is not valid, please check your input!</p>');
 define('ed_msg_quest_name_empty',				'<p>Identifier field must not be empty!</p>');
 define('ed_msg_quest_question_empty',		'<p>You forgot to define a question.</p>');
 define('ed_msg_quest_group_select',			'<p>Please select the group this question is to be assigned to.</p>');

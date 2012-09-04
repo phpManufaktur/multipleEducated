@@ -123,6 +123,7 @@ define('ed_msg_cfg_add_success',				'<p>Der Konfigurationsdatensatz mit der <b>I
 define('ed_msg_cfg_add_incomplete',			'<p>Der neu hinzuzufügende Konfigurationsdatensatz ist unvollständig! Bitte prüfen Sie Ihre Angaben!</p>');
 define('ed_msg_cfg_csv_export',					'<p>Die Konfigurationsdaten wurden als <b>%s</b> im /MEDIA Verzeichnis gesichert.</p>');
 define('ed_msg_invalid_date',						'<p>Das Datum <b>%s</b> ist ungültig, bitte prüfen Sie Ihre Eingabe!</p>');
+define('ed_msg_invalid_email',					'<p>Die E-Mail Adresse <b>%s</b> ist nicht g&uuml;ltig, bitte pr&uuml;fen Sie Ihre Eingabe.</p>');
 define('ed_msg_quest_name_empty',				'<p>Der Bezeichner darf nicht leer sein.</p>');
 define('ed_msg_quest_question_empty',		'<p>Sie haben vergessen eine Frage zu formulieren.</p>');
 define('ed_msg_quest_group_select',			'<p>Bitte wählen Sie die Gruppe aus, zu der die Frage gehören soll.</p>');

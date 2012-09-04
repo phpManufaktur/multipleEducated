@@ -36,7 +36,6 @@ else {
 $PRECHECK['PHP_VERSION'] = array('VERSION' => '5.2.0', 'OPERATOR' => '>=');
 $PRECHECK['WB_ADDONS'] = array(
 	'dbconnect_le'	=> array('VERSION' => '0.65', 'OPERATOR' => '>='),
-	'rhtools' => array('VERSION' => '0.50', 'OPERATOR' => '>='),
 	'dwoo' => array('VERSION' => '0.11', 'OPERATOR' => '>=')
 );
 

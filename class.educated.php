@@ -325,6 +325,65 @@ class dbEducatedConfig extends dbConnectLE {
 
 
   /**
+   * Haengt einen Slash an das Ende des uebergebenen Strings
+   * wenn das letzte Zeichen noch kein Slash ist
+   *
+   * @param STR $path
+   * @return STR
+   */
+  static public function addSlash($path) {
+    $path = substr($path, strlen($path)-1, 1) == "/" ? $path : $path."/";
+    return $path;
+  }
+
+  /**
+   * Wandelt einen String in einen Integer Wert um.
+   * Verwendet per Default die deutschen Trennzeichen
+   *
+   * @param string $string
+   * @param string $thousand_separator
+   * @param string $decimal_separator
+   * @return integer
+   */
+  static public function str2int($string, $thousand_separator = '.', $decimal_separator = ',') {
+    $string = str_replace('.', '', $string);
+    $string = str_replace(',', '.', $string);
+    $int = intval($string);
+    return $int;
+  }
+
+  /**
+   * Wandelt einen String in einen Float Wert um.
+   * Verwendet per Default die deutschen Trennzeichen
+   *
+   * @param string $string
+   * @param string $thousand_separator
+   * @param string $decimal_separator
+   * @return float
+   */
+  static public function str2float($string, $thousand_separator = '.', $decimal_separator = ',') {
+    $string = str_replace($thousand_separator, '', $string);
+    $string = str_replace($decimal_separator, '.', $string);
+    $float = floatval($string);
+    return $float;
+  }
+
+  /**
+   * Ueberprueft die uebergebene E-Mail Adresse auf logische Gueltigkeit
+   *
+   * @param string $email
+   * @return boolean
+   */
+  static public function validateEMail($email) {
+    if (preg_match("/^([0-9a-zA-Z]+[-._+&])*[0-9a-zA-Z]+@([-0-9a-zA-Z]+[.])+[a-zA-Z]{2,6}$/i", $email)) {
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+
+  /**
    * Fuegt den Wert $new_value in die dbShortLinkConfig ein
    *
    * @param $new_value STR - Wert, der uebernommen werden soll
@@ -333,7 +392,6 @@ class dbEducatedConfig extends dbConnectLE {
    * @return BOOL Ergebnis
    */
   public function setValue($new_value, $id) {
-  	$tools = new rhTools();
   	$value = '';
   	$where = array();
   	$where[self::field_id] = $id;
@@ -362,23 +420,23 @@ class dbEducatedConfig extends dbConnectLE {
   		$value = (int) $value;
   		break;
   	case self::type_email:
-  		if ($tools->validateEMail($new_value)) {
+  		if (self::validateEMail($new_value)) {
   			$value = trim($new_value);
   		}
   		else {
-  			$this->setMessage(sprintf(sl_msg_invalid_email, $new_value));
+  			$this->setMessage(sprintf(ed_msg_invalid_email, $new_value));
   			return false;
   		}
   		break;
   	case self::type_float:
-  		$value = $tools->str2float($new_value);
+  		$value = self::str2float($new_value);
   		break;
   	case self::type_integer:
-  		$value = $tools->str2int($new_value);
+  		$value = self::str2int($new_value);
   		break;
   	case self::type_url:
   	case self::type_path:
-  		$value = $tools->addSlash(trim($new_value));
+  		$value = self::addSlash(trim($new_value));
   		break;
   	case self::type_string:
   		$value = (string) trim($new_value);
@@ -386,7 +444,7 @@ class dbEducatedConfig extends dbConnectLE {
   	endswitch;
   	unset($config[self::field_id]);
   	$config[self::field_value] = (string) $value;
-  	$config[self::field_update_by] = $tools->getDisplayName();
+  	$config[self::field_update_by] = isset($_SESSION['DISPLAY_NAME']) ? $_SESSION['DISPLAY_NAME'] : 'SYSTEM';
   	$config[self::field_update_when] = date('Y-m-d H:i:s');
   	if (!$this->sqlUpdateRecord($config, $where)) {
   		$this->setError(sprintf('[%s - %s] %s', __METHOD__, __LINE__, $this->getError()));
