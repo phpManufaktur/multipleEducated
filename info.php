@@ -34,11 +34,11 @@ else {
 $module_directory     = 'educated';
 $module_name          = 'multipleEducated';
 $module_function      = 'tool';
-$module_version       = '0.16';
+$module_version       = '0.17';
 $module_status        = 'Stable';
 $module_platform      = '2.8.x';
 $module_author        = 'Ralf Hertsch, Berlin (Germany)';
 $module_license       = 'MIT License (MIT)';
-$module_description   = '"Bildungshappen" for Website Baker';
+$module_description   = '"Bildungshappen" for WebsiteBaker and LEPTON CMS';
 $module_home          = 'http://phpmanufaktur.de';
 $module_guid          = 'E579E333-829B-412F-89C0-9A852EF75ABC';
