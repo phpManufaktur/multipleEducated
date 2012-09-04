@@ -33,15 +33,11 @@ else {
 
 require_once(WB_PATH.'/modules/'.basename(dirname(__FILE__)).'/initialize.php');
 
-global $parser;
-global $rhTools;
 global $dbEdQuestions;
 global $dbEdItems;
 global $dbEdGroups;
 global $dbEdCfg;
 
-if (!is_object($parser)) $parser = new Dwoo();
-if (!is_object($rhTools)) $rhTools = new rhTools();
 if (!is_object($dbEdQuestions)) $dbEdQuestions = new dbEducatedQuestions();
 if (!is_object($dbEdItems)) $dbEdItems = new dbEducatedItems();
 if (!is_object($dbEdGroups)) $dbEdGroups = new dbEducatedGroups();
@@ -65,14 +61,39 @@ class multipleEducated {
 	private $useGroupID						= -1;
 
 	public function __construct($groupID = -1) {
-		$tools = new rhTools();
-		$tools->getPageLinkByPageID(PAGE_ID, $this->page_link);
+	  $this->page_link = self::getURLbyPageID(PAGE_ID);
 		$this->template_path = WB_PATH . '/modules/' . basename(dirname(__FILE__)) . '/htt/' ;
 		$dbEducatedConfig = new dbEducatedConfig();
 		$this->useGroupID = $groupID;
 		$this->cfgQuestionShuffle = $dbEducatedConfig->getValue(dbEducatedConfig::cfgQuestionShuffle);
 		$this->cfgRepliesCount = $dbEducatedConfig->getValue(dbEducatedConfig::cfgRepliesCount);
 	} // __construct()
+
+	static function getURLbyPageID($page_id) {
+	  global $database;
+
+	  if (defined('TOPIC_ID')) {
+	    // this is a TOPICS page
+	    $SQL = "SELECT `link` FROM `".TABLE_PREFIX."mod_topics` WHERE `topic_id`='".TOPIC_ID."'";
+	    $link = $database->get_one($SQL);
+	    if ($database->is_error()) {
+	      trigger_error(sprintf('[%s - %s] %s', __FUNCTION__, __LINE__, $database->get_error()), E_USER_ERROR);
+	      return false;
+	    }
+	    // include TOPICS settings
+	    global $topics_directory;
+	    include_once WB_PATH . '/modules/topics/module_settings.php';
+	    return WB_URL . $topics_directory . $link . PAGE_EXTENSION;
+	  }
+
+	  $SQL = "SELECT `link` FROM `".TABLE_PREFIX."pages` WHERE `page_id`='$page_id'";
+	  $link = $database->get_one($SQL, MYSQL_ASSOC);
+	  if ($database->is_error()) {
+	    trigger_error(sprintf('[%s - %s] %s', __FUNCTION__, __LINE__, $database->get_error()), E_USER_ERROR);
+	    return false;
+	  }
+	  return WB_URL.PAGES_DIRECTORY.$link.PAGE_EXTENSION;
+	}
 
 	/**
     * Set $this->error to $error
