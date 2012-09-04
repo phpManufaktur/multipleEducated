@@ -56,10 +56,20 @@ class dbEducatedQuestions extends dbConnectLE {
 
 	private $create_tables 		= false;
 
+	protected static $config_file = 'config.json';
+	protected static $table_prefix = TABLE_PREFIX;
+
 	public function __construct($create_tables=false) {
-		parent::__construct();
 		$this->create_tables = $create_tables;
-		$this->setTableName('mod_educated_questions');
+		// use another table prefix?
+    if (file_exists(WB_PATH.'/modules/'.basename(dirname(__FILE__)).'/config.json')) {
+      $config = json_decode(file_get_contents(WB_PATH.'/modules/'.basename(dirname(__FILE__)).'/config.json'), true);
+      if (isset($config['table_prefix']))
+        self::$table_prefix = $config['table_prefix'];
+    }
+    parent::__construct();
+    $this->setTablePrefix(self::$table_prefix);
+    $this->setTableName('mod_educated_questions');
 		$this->addFieldDefinition(self::field_id, "INT(11) NOT NULL AUTO_INCREMENT", true);
 		$this->addFieldDefinition(self::field_name, "VARCHAR(255) NOT NULL DEFAULT ''");
 		$this->addFieldDefinition(self::field_question, "TEXT NOT NULL DEFAULT ''");
@@ -113,10 +123,20 @@ class dbEducatedItems extends dbConnectLE {
 
 	private $create_tables 		= false;
 
+	protected static $config_file = 'config.json';
+	protected static $table_prefix = TABLE_PREFIX;
+
 	public function __construct($create_tables=false) {
-		parent::__construct();
 		$this->create_tables = $create_tables;
-		$this->setTableName('mod_educated_items');
+		// use another table prefix?
+    if (file_exists(WB_PATH.'/modules/'.basename(dirname(__FILE__)).'/config.json')) {
+      $config = json_decode(file_get_contents(WB_PATH.'/modules/'.basename(dirname(__FILE__)).'/config.json'), true);
+      if (isset($config['table_prefix']))
+        self::$table_prefix = $config['table_prefix'];
+    }
+    parent::__construct();
+    $this->setTablePrefix(self::$table_prefix);
+    $this->setTableName('mod_educated_items');
 		$this->addFieldDefinition(self::field_id, "INT(11) NOT NULL AUTO_INCREMENT", true);
 		$this->addFieldDefinition(self::field_question_id, "INT(11) NOT NULL DEFAULT '-1'");
 		//$this->addFieldDefinition(self::field_question, "TEXT NOT NULL DEFAULT ''");
@@ -160,10 +180,20 @@ class dbEducatedGroups extends dbConnectLE {
 
 	private $create_tables 		= false;
 
+	protected static $config_file = 'config.json';
+	protected static $table_prefix = TABLE_PREFIX;
+
 	public function __construct($create_tables=false) {
-		parent::__construct();
 		$this->create_tables = $create_tables;
-		$this->setTableName('mod_educated_groups');
+		// use another table prefix?
+    if (file_exists(WB_PATH.'/modules/'.basename(dirname(__FILE__)).'/config.json')) {
+      $config = json_decode(file_get_contents(WB_PATH.'/modules/'.basename(dirname(__FILE__)).'/config.json'), true);
+      if (isset($config['table_prefix']))
+        self::$table_prefix = $config['table_prefix'];
+    }
+    parent::__construct();
+    $this->setTablePrefix(self::$table_prefix);
+    $this->setTableName('mod_educated_groups');
 		$this->addFieldDefinition(self::field_id, "INT(11) NOT NULL AUTO_INCREMENT", true);
 		$this->addFieldDefinition(self::field_name, "VARCHAR(255) NOT NULL DEFAULT ''");
 		$this->addFieldDefinition(self::field_description, "TEXT NOT NULL DEFAULT ''");
@@ -230,10 +260,20 @@ class dbEducatedConfig extends dbConnectLE {
   	array('ed_label_cfg_replies_count', self::cfgRepliesCount, self::type_integer, 3, 'ed_desc_cfg_replies_count')
   );
 
+  protected static $config_file = 'config.json';
+  protected static $table_prefix = TABLE_PREFIX;
+
   public function __construct($createTables = false) {
   	$this->createTables = $createTables;
-  	parent::__construct();
-  	$this->setTableName('mod_educated_cfg');
+		// use another table prefix?
+    if (file_exists(WB_PATH.'/modules/'.basename(dirname(__FILE__)).'/config.json')) {
+      $config = json_decode(file_get_contents(WB_PATH.'/modules/'.basename(dirname(__FILE__)).'/config.json'), true);
+      if (isset($config['table_prefix']))
+        self::$table_prefix = $config['table_prefix'];
+    }
+    parent::__construct();
+    $this->setTablePrefix(self::$table_prefix);
+    $this->setTableName('mod_educated_cfg');
   	$this->addFieldDefinition(self::field_id, "INT(11) NOT NULL AUTO_INCREMENT", true);
   	$this->addFieldDefinition(self::field_name, "VARCHAR(32) NOT NULL DEFAULT ''");
   	$this->addFieldDefinition(self::field_type, "TINYINT UNSIGNED NOT NULL DEFAULT '".self::type_undefined."'");
