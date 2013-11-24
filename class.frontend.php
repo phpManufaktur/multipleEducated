@@ -5,7 +5,7 @@
  *
  * @author Ralf Hertsch <ralf.hertsch@phpmanufaktur.de>
  * @link http://phpmanufaktur.de
- * @copyright 2009 - 2012
+ * @copyright 2009 - 2013
  * @license MIT License (MIT) http://www.opensource.org/licenses/MIT
  */
 
@@ -45,57 +45,57 @@ if (!is_object($dbEdCfg)) $dbEdCfg = new dbEducatedConfig();
 
 class multipleEducated {
 
-	const request_action				= 'eda';
+    const request_action                = 'eda';
 
-	const action_default				= 'def';
-	const action_question				= 'quest';
-	const action_answer_check		= 'ac';
+    const action_default                = 'def';
+    const action_question                = 'quest';
+    const action_answer_check        = 'ac';
 
-	private $page_link 					= '';
-	private $template_path			= '';
-	private $error							= '';
-	private $message						= '';
+    private $page_link                     = '';
+    private $template_path            = '';
+    private $error                            = '';
+    private $message                        = '';
 
-	private $cfgQuestionShuffle		= 0;
-	private $cfgRepliesCount			= 3;
-	private $useGroupID						= -1;
+    private $cfgQuestionShuffle        = 0;
+    private $cfgRepliesCount            = 3;
+    private $useGroupID                        = -1;
 
-	public function __construct($groupID = -1) {
-	  $this->page_link = self::getURLbyPageID(PAGE_ID);
-		$this->template_path = WB_PATH . '/modules/' . basename(dirname(__FILE__)) . '/htt/' ;
-		$dbEducatedConfig = new dbEducatedConfig();
-		$this->useGroupID = $groupID;
-		$this->cfgQuestionShuffle = $dbEducatedConfig->getValue(dbEducatedConfig::cfgQuestionShuffle);
-		$this->cfgRepliesCount = $dbEducatedConfig->getValue(dbEducatedConfig::cfgRepliesCount);
-	} // __construct()
+    public function __construct($groupID = -1) {
+      $this->page_link = self::getURLbyPageID(PAGE_ID);
+        $this->template_path = WB_PATH . '/modules/' . basename(dirname(__FILE__)) . '/htt/' ;
+        $dbEducatedConfig = new dbEducatedConfig();
+        $this->useGroupID = $groupID;
+        $this->cfgQuestionShuffle = $dbEducatedConfig->getValue(dbEducatedConfig::cfgQuestionShuffle);
+        $this->cfgRepliesCount = $dbEducatedConfig->getValue(dbEducatedConfig::cfgRepliesCount);
+    } // __construct()
 
-	static function getURLbyPageID($page_id) {
-	  global $database;
+    static function getURLbyPageID($page_id) {
+      global $database;
 
-	  if (defined('TOPIC_ID')) {
-	    // this is a TOPICS page
-	    $SQL = "SELECT `link` FROM `".TABLE_PREFIX."mod_topics` WHERE `topic_id`='".TOPIC_ID."'";
-	    $link = $database->get_one($SQL);
-	    if ($database->is_error()) {
-	      trigger_error(sprintf('[%s - %s] %s', __FUNCTION__, __LINE__, $database->get_error()), E_USER_ERROR);
-	      return false;
-	    }
-	    // include TOPICS settings
-	    global $topics_directory;
-	    include_once WB_PATH . '/modules/topics/module_settings.php';
-	    return WB_URL . $topics_directory . $link . PAGE_EXTENSION;
-	  }
+      if (defined('TOPIC_ID')) {
+        // this is a TOPICS page
+        $SQL = "SELECT `link` FROM `".TABLE_PREFIX."mod_topics` WHERE `topic_id`='".TOPIC_ID."'";
+        $link = $database->get_one($SQL);
+        if ($database->is_error()) {
+          trigger_error(sprintf('[%s - %s] %s', __FUNCTION__, __LINE__, $database->get_error()), E_USER_ERROR);
+          return false;
+        }
+        // include TOPICS settings
+        global $topics_directory;
+        include_once WB_PATH . '/modules/topics/module_settings.php';
+        return WB_URL . $topics_directory . $link . PAGE_EXTENSION;
+      }
 
-	  $SQL = "SELECT `link` FROM `".TABLE_PREFIX."pages` WHERE `page_id`='$page_id'";
-	  $link = $database->get_one($SQL, MYSQL_ASSOC);
-	  if ($database->is_error()) {
-	    trigger_error(sprintf('[%s - %s] %s', __FUNCTION__, __LINE__, $database->get_error()), E_USER_ERROR);
-	    return false;
-	  }
-	  return WB_URL.PAGES_DIRECTORY.$link.PAGE_EXTENSION;
-	}
+      $SQL = "SELECT `link` FROM `".TABLE_PREFIX."pages` WHERE `page_id`='$page_id'";
+      $link = $database->get_one($SQL, MYSQL_ASSOC);
+      if ($database->is_error()) {
+        trigger_error(sprintf('[%s - %s] %s', __FUNCTION__, __LINE__, $database->get_error()), E_USER_ERROR);
+        return false;
+      }
+      return WB_URL.PAGES_DIRECTORY.$link.PAGE_EXTENSION;
+    }
 
-	/**
+    /**
     * Set $this->error to $error
     *
     * @param STR $error
@@ -126,7 +126,7 @@ class multipleEducated {
    * Reset Error to empty String
    */
   public function clearError() {
-  	$this->error = '';
+      $this->error = '';
   }
 
   /** Set $this->message to $message
@@ -185,329 +185,334 @@ class multipleEducated {
    * @param REFERENCE $_REQUEST Array
    * @return $request
    */
-	public function xssPrevent(&$request) {
-  	if (is_string($request)) {
-	    $request = html_entity_decode($request);
-	    $request = strip_tags($request);
-	    $request = trim($request);
-	    $request = stripslashes($request);
-  	}
-	  return $request;
+    public function xssPrevent(&$request) {
+      if (is_string($request)) {
+        $request = html_entity_decode($request);
+        $request = strip_tags($request);
+        $request = trim($request);
+        $request = stripslashes($request);
+      }
+      return $request;
   } // xssPrevent()
 
   public function action($page_path = -1) {
-  	if ($page_path != -1) {
-  		$this->page_link = WB_URL.$page_path;
-  	}
-  	$html_allowed = array();
-  	foreach ($_REQUEST as $key => $value) {
-  		if (!in_array($key, $html_allowed)) {
-    		$_REQUEST[$key] = $this->xssPrevent($value);
-  		}
-  	}
+      if ($page_path != -1) {
+          $this->page_link = WB_URL.$page_path;
+      }
+      $html_allowed = array();
+      foreach ($_REQUEST as $key => $value) {
+          if (!in_array($key, $html_allowed)) {
+            $_REQUEST[$key] = $this->xssPrevent($value);
+          }
+      }
 
-  	if (file_exists(WB_PATH.'/modules/droplets_extension/interface.php'))  {
-  	  // if DroplesExtension exists load interface
-  	  require_once (WB_PATH . '/modules/droplets_extension/interface.php');
-  	  // register CSS file
-  	  if (!is_registered_droplet_css('Educated', PAGE_ID)) {
-  	    register_droplet_css('Educated', PAGE_ID, 'educated', 'educated.css');
-  	  }
-  	}
+      if (file_exists(WB_PATH.'/modules/droplets_extension/interface.php'))  {
+        // if DroplesExtension exists load interface
+        require_once (WB_PATH . '/modules/droplets_extension/interface.php');
+        // register CSS file
+        if (!is_registered_droplet_css('Educated', PAGE_ID)) {
+          register_droplet_css('Educated', PAGE_ID, 'educated', 'educated.css');
+        }
+      }
+      elseif (defined('CAT_VERSION')) {
+          if (!CAT_Helper_Droplet::is_registered_droplet_css('Educated', PAGE_ID)) {
+              CAT_Helper_Droplet::register_droplet_css('Educated', PAGE_ID, 'educated', 'educated.css');
+          }
+      }
 
     isset($_REQUEST[self::request_action]) ? $action = $_REQUEST[self::request_action] : $action = self::action_default;
-  	switch ($action):
-  	case self::action_question:
-  		$this->show($this->startQuestion());
-  		break;
-  	case self::action_answer_check:
-  		$this->show($this->checkAnswer());
-  		break;
-  	default:
-  		$this->show($this->startQuestion());
-  		break;
-  	endswitch;
+      switch ($action):
+      case self::action_question:
+          $this->show($this->startQuestion());
+          break;
+      case self::action_answer_check:
+          $this->show($this->checkAnswer());
+          break;
+      default:
+          $this->show($this->startQuestion());
+          break;
+      endswitch;
   } // action
 
   public function show($content) {
-  	global $parser;
-  	if ($this->isError()) {
-  		$content = $this->getError();
-  		$class = 'ed_error';
-  	}
-  	else {
-  		$class = 'ed_content';
-  	}
-  	$data = array(
-  		'class'		=> $class,
-  		'content'	=> $content
-  	);
-  	$parser->output($this->template_path.'frontend.body.htt', $data);
+      global $parser;
+      if ($this->isError()) {
+          $content = $this->getError();
+          $class = 'ed_error';
+      }
+      else {
+          $class = 'ed_content';
+      }
+      $data = array(
+          'class'        => $class,
+          'content'    => $content
+      );
+      $parser->output($this->template_path.'frontend.body.htt', $data);
   } // show()
 
   /**
    * Zeigt die Eingangsfrage an
    */
   public function startQuestion() {
-  	global $dbEdGroups;
-  	global $dbEdQuestions;
-  	global $parser;
-  	global $dbEdItems;
+      global $dbEdGroups;
+      global $dbEdQuestions;
+      global $parser;
+      global $dbEdItems;
 
-  	// Gruppe angegeben?
-  	if ($this->useGroupID > 0) {
-  		//  Pruefen, ob Gruppe existiert und aktiv ist...
-  		$where = array();
-  		$where[dbEducatedGroups::field_id] = $this->useGroupID;
-  		$where[dbEducatedGroups::field_status] = dbEducatedGroups::status_active;
-  		$groups = array();
-  		if (!$dbEdGroups->sqlSelectRecord($where, $groups)) {
-  			$this->setError(sprintf('[%s - %s] %s', __METHOD__, __LINE__, $dbEdGroups->getError()));
-  			return false;
-  		}
-  		if (count($groups) < 1) {
-  			// keine Gruppe gefunden oder Gruppe inaktiv
-  			$this->useGroupID = -1;
-  		}
-  	}
-  	else {
-  		$this->useGroupID = -1;
-  	}
-  	if ((isset($_REQUEST[dbEducatedQuestions::field_id])) && ($_REQUEST[dbEducatedQuestions::field_id] > 0)) {
-  		// Frage an Hand der ID auswaehlen
-  		$where = array();
-  		$where[dbEducatedQuestions::field_id] = $_REQUEST[dbEducatedQuestions::field_id];
-  		$question = array();
-  		if (!$dbEdQuestions->sqlSelectRecord($where, $question)) {
-  			$this->setError(sprintf('[%s - %s] %s', __METHOD__, __LINE__, $dbEdQuestions->getError()));
-  			return false;
-  		}
-  		if (sizeof($question) < 1) {
-  			// Abfrage fehlgeschlagen
-  			$this->setError(sprintf(ed_error_question_id_not_exists, __METHOD__, __LINE__, $_REQUEST[dbEducatedQuestions::field_id]));
-  			return false;
-  		}
-  		$question = $question[0];
-  	}
-  	elseif ($this->cfgQuestionShuffle) {
-  		// Frage zufaellig auswaehlen, Datum wird nicht beruecksichtigt
-  		if ($this->useGroupID > 0) {
-  			// Frage aus bestimmter Gruppe auswaehlen
-  			$SQL = sprintf( "SELECT %s FROM %s WHERE %s='%s' AND %s='%s'",
-  											dbEducatedQuestions::field_id,
-  											$dbEdQuestions->getTableName(),
-  											dbEducatedQuestions::field_status,
-  											dbEducatedQuestions::status_active,
-  											dbEducatedQuestions::field_group,
-  											$this->useGroupID);
-  		}
-  		else {
-  			// Frage aus beliebiger Gruppe
-  			$SQL = sprintf(	"SELECT * FROM %s WHERE %s='%s'",
-  										$dbEdQuestions->getTableName(),
-  										dbEducatedQuestions::field_status,
-  										dbEducatedQuestions::status_active);
-  		}
+      // Gruppe angegeben?
+      if ($this->useGroupID > 0) {
+          //  Pruefen, ob Gruppe existiert und aktiv ist...
+          $where = array();
+          $where[dbEducatedGroups::field_id] = $this->useGroupID;
+          $where[dbEducatedGroups::field_status] = dbEducatedGroups::status_active;
+          $groups = array();
+          if (!$dbEdGroups->sqlSelectRecord($where, $groups)) {
+              $this->setError(sprintf('[%s - %s] %s', __METHOD__, __LINE__, $dbEdGroups->getError()));
+              return false;
+          }
+          if (count($groups) < 1) {
+              // keine Gruppe gefunden oder Gruppe inaktiv
+              $this->useGroupID = -1;
+          }
+      }
+      else {
+          $this->useGroupID = -1;
+      }
+      if ((isset($_REQUEST[dbEducatedQuestions::field_id])) && ($_REQUEST[dbEducatedQuestions::field_id] > 0)) {
+          // Frage an Hand der ID auswaehlen
+          $where = array();
+          $where[dbEducatedQuestions::field_id] = $_REQUEST[dbEducatedQuestions::field_id];
+          $question = array();
+          if (!$dbEdQuestions->sqlSelectRecord($where, $question)) {
+              $this->setError(sprintf('[%s - %s] %s', __METHOD__, __LINE__, $dbEdQuestions->getError()));
+              return false;
+          }
+          if (sizeof($question) < 1) {
+              // Abfrage fehlgeschlagen
+              $this->setError(sprintf(ed_error_question_id_not_exists, __METHOD__, __LINE__, $_REQUEST[dbEducatedQuestions::field_id]));
+              return false;
+          }
+          $question = $question[0];
+      }
+      elseif ($this->cfgQuestionShuffle) {
+          // Frage zufaellig auswaehlen, Datum wird nicht beruecksichtigt
+          if ($this->useGroupID > 0) {
+              // Frage aus bestimmter Gruppe auswaehlen
+              $SQL = sprintf( "SELECT %s FROM %s WHERE %s='%s' AND %s='%s'",
+                                              dbEducatedQuestions::field_id,
+                                              $dbEdQuestions->getTableName(),
+                                              dbEducatedQuestions::field_status,
+                                              dbEducatedQuestions::status_active,
+                                              dbEducatedQuestions::field_group,
+                                              $this->useGroupID);
+          }
+          else {
+              // Frage aus beliebiger Gruppe
+              $SQL = sprintf(    "SELECT * FROM %s WHERE %s='%s'",
+                                          $dbEdQuestions->getTableName(),
+                                          dbEducatedQuestions::field_status,
+                                          dbEducatedQuestions::status_active);
+          }
 
-  		// Fragen auswaehlen
-  		if (!$dbEdQuestions->sqlExec($SQL, $result)) {
-  			$this->setError(sprintf('[%s - %s] %s', __METHOD__, __LINE__, $dbEdQuestions->getError()));
-  			return false;
-  		}
-  		$all_questions = array();
-  		foreach ($result as $q) $all_questions[] = $q[dbEducatedQuestions::field_id];
-  		$used_questions = isset($_SESSION['MC_QUESTIONS_USED']) ? $_SESSION['MC_QUESTIONS_USED'] : array();
-  		$free_questions = array_diff($all_questions, $used_questions);
-  		if (count($free_questions) == 0) {
-  			$free_questions = $all_questions;
-  			$used_questions = array();
-  		}
+          // Fragen auswaehlen
+          if (!$dbEdQuestions->sqlExec($SQL, $result)) {
+              $this->setError(sprintf('[%s - %s] %s', __METHOD__, __LINE__, $dbEdQuestions->getError()));
+              return false;
+          }
+          $all_questions = array();
+          foreach ($result as $q) $all_questions[] = $q[dbEducatedQuestions::field_id];
+          $used_questions = isset($_SESSION['MC_QUESTIONS_USED']) ? $_SESSION['MC_QUESTIONS_USED'] : array();
+          $free_questions = array_diff($all_questions, $used_questions);
+          if (count($free_questions) == 0) {
+              $free_questions = $all_questions;
+              $used_questions = array();
+          }
 
-  		$SQL = sprintf( "SELECT * FROM %s WHERE FIND_IN_SET(%s, '%s') ORDER BY RAND() LIMIT 1",
-  										$dbEdQuestions->getTableName(),
-  										dbEducatedQuestions::field_id,
-  										implode(',', $free_questions));
+          $SQL = sprintf( "SELECT * FROM %s WHERE FIND_IN_SET(%s, '%s') ORDER BY RAND() LIMIT 1",
+                                          $dbEdQuestions->getTableName(),
+                                          dbEducatedQuestions::field_id,
+                                          implode(',', $free_questions));
 
 
-  		$question = array();
-  		if (!$dbEdQuestions->sqlExec($SQL, $question)) {
-  			$this->setError(sprintf('[%s - %s] %s', __METHOD__, __LINE__, $dbEdQuestions->getError()));
-  			return false;
-  		}
-  		if (sizeof($question) < 1) {
-  			// Abfrage fehlgeschlagen
-  			$this->setError(ed_error_random_fail);
-  			return false;
-  		}
-  		$question = $question[0];
-  		// SESSION setzen
-  		$used_questions[] = $question[dbEducatedQuestions::field_id];
-  		$_SESSION['MC_QUESTIONS_USED'] = $used_questions;
-  	}
-  	else {
-  		// Frage aus einem Datumsbereich zufaellig auswaehlen
-  		if ($this->useGroupID > 0) {
-  			// Frage aus einer bestimmten Gruppe auswaehlen
-  			$SQL = sprintf(	"SELECT * FROM %s WHERE %s='%s' AND %s <= NOW() AND %s >= NOW() AND %s='%s' ORDER BY RAND() LIMIT 1",
-  										$dbEdQuestions->getTableName(),
-  										dbEducatedQuestions::field_status,
-  										dbEducatedQuestions::status_active,
-  										dbEducatedQuestions::field_date_start,
-  										dbEducatedQuestions::field_date_stop,
-  										dbEducatedQuestions::field_group,
-  										$this->useGroupID);
-  		}
-  		else {
-  			// Frage aus beliebiger Gruppe
-  			$SQL = sprintf(	"SELECT * FROM %s WHERE %s='%s' AND %s <= NOW() AND %s >= NOW() ORDER BY RAND() LIMIT 1",
-  										$dbEdQuestions->getTableName(),
-  										dbEducatedQuestions::field_status,
-  										dbEducatedQuestions::status_active,
-  										dbEducatedQuestions::field_date_start,
-  										dbEducatedQuestions::field_date_stop);
-  		}
+          $question = array();
+          if (!$dbEdQuestions->sqlExec($SQL, $question)) {
+              $this->setError(sprintf('[%s - %s] %s', __METHOD__, __LINE__, $dbEdQuestions->getError()));
+              return false;
+          }
+          if (sizeof($question) < 1) {
+              // Abfrage fehlgeschlagen
+              $this->setError(ed_error_random_fail);
+              return false;
+          }
+          $question = $question[0];
+          // SESSION setzen
+          $used_questions[] = $question[dbEducatedQuestions::field_id];
+          $_SESSION['MC_QUESTIONS_USED'] = $used_questions;
+      }
+      else {
+          // Frage aus einem Datumsbereich zufaellig auswaehlen
+          if ($this->useGroupID > 0) {
+              // Frage aus einer bestimmten Gruppe auswaehlen
+              $SQL = sprintf(    "SELECT * FROM %s WHERE %s='%s' AND %s <= NOW() AND %s >= NOW() AND %s='%s' ORDER BY RAND() LIMIT 1",
+                                          $dbEdQuestions->getTableName(),
+                                          dbEducatedQuestions::field_status,
+                                          dbEducatedQuestions::status_active,
+                                          dbEducatedQuestions::field_date_start,
+                                          dbEducatedQuestions::field_date_stop,
+                                          dbEducatedQuestions::field_group,
+                                          $this->useGroupID);
+          }
+          else {
+              // Frage aus beliebiger Gruppe
+              $SQL = sprintf(    "SELECT * FROM %s WHERE %s='%s' AND %s <= NOW() AND %s >= NOW() ORDER BY RAND() LIMIT 1",
+                                          $dbEdQuestions->getTableName(),
+                                          dbEducatedQuestions::field_status,
+                                          dbEducatedQuestions::status_active,
+                                          dbEducatedQuestions::field_date_start,
+                                          dbEducatedQuestions::field_date_stop);
+          }
 
-  		if (!$dbEdQuestions->sqlExec($SQL, $question)) {
-  			$this->setError(sprintf('[%s - %s] %s', __METHOD__, __LINE__, $dbEdQuestions->getError()));
-  			return false;
-  		}
-  		if (sizeof($question) < 1) {
-  			// Abfrage fehlgeschlagen
-  			$this->setError(ed_error_date_random_fail);
-  			return false;
-  		}
-  		$question = $question[0];
-  	}
+          if (!$dbEdQuestions->sqlExec($SQL, $question)) {
+              $this->setError(sprintf('[%s - %s] %s', __METHOD__, __LINE__, $dbEdQuestions->getError()));
+              return false;
+          }
+          if (sizeof($question) < 1) {
+              // Abfrage fehlgeschlagen
+              $this->setError(ed_error_date_random_fail);
+              return false;
+          }
+          $question = $question[0];
+      }
 
-		$SQL = sprintf(	"SELECT * FROM %s WHERE %s='%s' ORDER BY RAND()",
-										$dbEdItems->getTableName(),
-										dbEducatedItems::field_question_id,
-										$question[dbEducatedQuestions::field_id]);
-		$answers = array();
-		if (!$dbEdItems->sqlExec($SQL, $answers)) {
-			$this->setError(sprintf('[%s - %s] %s', __METHOD__, __LINE__, $dbEdItems->getError()));
-			return false;
-		}
-		if (sizeof($answers) < $this->cfgRepliesCount) {
-			// Anzahl der Antworten ist zu gering
-			$this->setError(ed_error_to_less_answers);
-			return false;
-		}
-		$items = '';
-		$row = new Dwoo_Template_File($this->template_path.'frontend.question.answer.htt');
-		foreach ($answers as $answer) {
-			$data = array(
-				'radio_name'	=> dbEducatedItems::field_id,
-				'radio_value'	=> $answer[dbEducatedItems::field_id],
-				'answer'			=> $answer[dbEducatedItems::field_answer]
-			);
-			$items .= $parser->get($row, $data);
-		}
-		// Mitteilungen anzeigen
-		if ($this->isMessage()) {
-			$intro = sprintf('<div class="ed_message">%s</div>', $this->getMessage());
-		}
-		else {
-			$intro = '';
-		}
+        $SQL = sprintf(    "SELECT * FROM %s WHERE %s='%s' ORDER BY RAND()",
+                                        $dbEdItems->getTableName(),
+                                        dbEducatedItems::field_question_id,
+                                        $question[dbEducatedQuestions::field_id]);
+        $answers = array();
+        if (!$dbEdItems->sqlExec($SQL, $answers)) {
+            $this->setError(sprintf('[%s - %s] %s', __METHOD__, __LINE__, $dbEdItems->getError()));
+            return false;
+        }
+        if (sizeof($answers) < $this->cfgRepliesCount) {
+            // Anzahl der Antworten ist zu gering
+            $this->setError(ed_error_to_less_answers);
+            return false;
+        }
+        $items = '';
+        $row = new Dwoo_Template_File($this->template_path.'frontend.question.answer.htt');
+        foreach ($answers as $answer) {
+            $data = array(
+                'radio_name'    => dbEducatedItems::field_id,
+                'radio_value'    => $answer[dbEducatedItems::field_id],
+                'answer'            => $answer[dbEducatedItems::field_answer]
+            );
+            $items .= $parser->get($row, $data);
+        }
+        // Mitteilungen anzeigen
+        if ($this->isMessage()) {
+            $intro = sprintf('<div class="ed_message">%s</div>', $this->getMessage());
+        }
+        else {
+            $intro = '';
+        }
 
-		$data = array(
-			'header'					=> ed_header_question,
-			'intro'						=> $intro,
-			'form_name'				=> 'ed_question',
-			'form_action'			=> $this->page_link,
-			'action_name'			=> self::request_action,
-			'action_value'		=> self::action_answer_check,
-			'id_name'					=> dbEducatedQuestions::field_id,
-			'id_value'				=> $question[dbEducatedQuestions::field_id],
-			'question'				=> $question[dbEducatedQuestions::field_question],
-			'answers'					=> $items,
-			'btn_ok'					=> ed_btn_check,
-			'btn_abort'				=> ed_btn_new_question,
-			'abort_location'	=> sprintf('%s?%s=%s', $this->page_link, self::request_action, self::action_question),
-		);
-		return $parser->get($this->template_path.'frontend.question.htt', $data);
+        $data = array(
+            'header'                    => ed_header_question,
+            'intro'                        => $intro,
+            'form_name'                => 'ed_question',
+            'form_action'            => $this->page_link,
+            'action_name'            => self::request_action,
+            'action_value'        => self::action_answer_check,
+            'id_name'                    => dbEducatedQuestions::field_id,
+            'id_value'                => $question[dbEducatedQuestions::field_id],
+            'question'                => $question[dbEducatedQuestions::field_question],
+            'answers'                    => $items,
+            'btn_ok'                    => ed_btn_check,
+            'btn_abort'                => ed_btn_new_question,
+            'abort_location'    => sprintf('%s?%s=%s', $this->page_link, self::request_action, self::action_question),
+        );
+        return $parser->get($this->template_path.'frontend.question.htt', $data);
   } // startQuestion()
 
   public function checkAnswer() {
-  	global $dbEdQuestions;
-  	global $dbEdItems;
-  	global $parser;
+      global $dbEdQuestions;
+      global $dbEdItems;
+      global $parser;
 
-  	if (!isset($_REQUEST[dbEducatedItems::field_id])) {
-  		// Fehler: keine Auswahl getroffen
-  		$this->setMessage(ed_msg_answer_no_selection);
-  		return $this->startQuestion();
-  	}
-  	else {
-  		$item_id = $_REQUEST[dbEducatedItems::field_id];
-  	}
-  	if (!isset($_REQUEST[dbEducatedItems::field_id])) {
-  		// Fehler: keine Question ID gesetzt
-  		$this->setError(ed_error_question_id_missing, __METHOD__, __LINE__);
-  		return false;
-  	}
-  	else {
-  		$id = $_REQUEST[dbEducatedQuestions::field_id];
-  	}
-  	$where = array();
-  	$where[dbEducatedQuestions::field_id] = $id;
-  	$question = array();
-  	if (!$dbEdQuestions->sqlSelectRecord($where, $question)) {
-  		$this->setError(sprintf('[%s - %s] %s', __METHOD__, __LINE__, $dbEdQuestions->getError()));
-  		return false;
-  	}
-  	if (sizeof($question) < 1) {
-  		$this->setError(sprintf(ed_error_question_id_not_exists, __METHOD__, __LINE__, $id));
-  		return false;
-  	}
-  	$question = $question[0];
-  	$where = array();
-  	$where[dbEducatedItems::field_id] = $item_id;
-  	$answer = array();
-  	if (!$dbEdItems->sqlSelectRecord($where, $answer)) {
-  		$this->setError(sprintf('[%s - %s] %s', __METHOD__, __LINE__, $dbEdItems->getError()));
-  		return false;
-  	}
-  	if (sizeof($answer) < 1) {
-  		$this->setError(sprintf(ed_error_answer_id_not_exists, __METHOD__, __LINE__, $item_id));
-  		return false;
-  	}
-  	$answer = $answer[0];
-  	// Antwort anzeigen
-  	$antwort = sprintf(ed_str_answer_repeat, $answer[dbEducatedItems::field_answer]);
-  	// Ist die Frage richtig beantwortet?
-  	if ($answer[dbEducatedItems::field_truth] == dbEducatedItems::truth_true) {
-  		// Frage ist richtig beantwortet
-  		$answer_class = 'ed_answer_good';
-  		$wertung = sprintf(ed_str_answer_good, $answer[dbEducatedItems::field_explain]);
-  		$id = -1;
-  		$btn_ok = ed_btn_new_question;
-  	}
-  	else {
-  		// Frage ist falsch beantwortet
-  		$answer_class = 'ed_answer_bad';
-  		$wertung = sprintf(ed_str_answer_bad, $answer[dbEducatedItems::field_explain]);
-  		$btn_ok = ed_btn_retry;
-  	}
+      if (!isset($_REQUEST[dbEducatedItems::field_id])) {
+          // Fehler: keine Auswahl getroffen
+          $this->setMessage(ed_msg_answer_no_selection);
+          return $this->startQuestion();
+      }
+      else {
+          $item_id = $_REQUEST[dbEducatedItems::field_id];
+      }
+      if (!isset($_REQUEST[dbEducatedItems::field_id])) {
+          // Fehler: keine Question ID gesetzt
+          $this->setError(ed_error_question_id_missing, __METHOD__, __LINE__);
+          return false;
+      }
+      else {
+          $id = $_REQUEST[dbEducatedQuestions::field_id];
+      }
+      $where = array();
+      $where[dbEducatedQuestions::field_id] = $id;
+      $question = array();
+      if (!$dbEdQuestions->sqlSelectRecord($where, $question)) {
+          $this->setError(sprintf('[%s - %s] %s', __METHOD__, __LINE__, $dbEdQuestions->getError()));
+          return false;
+      }
+      if (sizeof($question) < 1) {
+          $this->setError(sprintf(ed_error_question_id_not_exists, __METHOD__, __LINE__, $id));
+          return false;
+      }
+      $question = $question[0];
+      $where = array();
+      $where[dbEducatedItems::field_id] = $item_id;
+      $answer = array();
+      if (!$dbEdItems->sqlSelectRecord($where, $answer)) {
+          $this->setError(sprintf('[%s - %s] %s', __METHOD__, __LINE__, $dbEdItems->getError()));
+          return false;
+      }
+      if (sizeof($answer) < 1) {
+          $this->setError(sprintf(ed_error_answer_id_not_exists, __METHOD__, __LINE__, $item_id));
+          return false;
+      }
+      $answer = $answer[0];
+      // Antwort anzeigen
+      $antwort = sprintf(ed_str_answer_repeat, $answer[dbEducatedItems::field_answer]);
+      // Ist die Frage richtig beantwortet?
+      if ($answer[dbEducatedItems::field_truth] == dbEducatedItems::truth_true) {
+          // Frage ist richtig beantwortet
+          $answer_class = 'ed_answer_good';
+          $wertung = sprintf(ed_str_answer_good, $answer[dbEducatedItems::field_explain]);
+          $id = -1;
+          $btn_ok = ed_btn_new_question;
+      }
+      else {
+          // Frage ist falsch beantwortet
+          $answer_class = 'ed_answer_bad';
+          $wertung = sprintf(ed_str_answer_bad, $answer[dbEducatedItems::field_explain]);
+          $btn_ok = ed_btn_retry;
+      }
 
-  	$data = array(
-  		'header'					=> ed_header_answer,
-  		'form_name'				=> 'ed_answer',
-  		'form_action'			=> $this->page_link,
-  		'action_name'			=> self::request_action,
-  		'action_value'		=> self::action_question,
-  		'id_name'					=> dbEducatedQuestions::field_id,
-  		'id_value'				=> $id,
-  		'question'				=> $question[dbEducatedQuestions::field_question],
-  		'answer_class'		=> $answer_class,
-  		'answer'					=> $antwort,
-  		'explain'					=> $wertung,
-  		'btn_ok'					=> $btn_ok,
-  		'btn_abort'				=> ed_btn_abort,
-  		'abort_location'	=> sprintf('%s?%s=%s&%s=-1', $this->page_link, self::request_action, self::action_question, dbEducatedQuestions::field_id)
-  	);
-  	return $parser->get($this->template_path.'frontend.answer.htt', $data);
+      $data = array(
+          'header'                    => ed_header_answer,
+          'form_name'                => 'ed_answer',
+          'form_action'            => $this->page_link,
+          'action_name'            => self::request_action,
+          'action_value'        => self::action_question,
+          'id_name'                    => dbEducatedQuestions::field_id,
+          'id_value'                => $id,
+          'question'                => $question[dbEducatedQuestions::field_question],
+          'answer_class'        => $answer_class,
+          'answer'                    => $antwort,
+          'explain'                    => $wertung,
+          'btn_ok'                    => $btn_ok,
+          'btn_abort'                => ed_btn_abort,
+          'abort_location'    => sprintf('%s?%s=%s&%s=-1', $this->page_link, self::request_action, self::action_question, dbEducatedQuestions::field_id)
+      );
+      return $parser->get($this->template_path.'frontend.answer.htt', $data);
   } // checkAnswer()
 
 } // class multipleEducated

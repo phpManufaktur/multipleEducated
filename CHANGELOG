@@ -3,13 +3,20 @@
 Ralf Hertsch, Stockholmer Str. 31, 13359 Berlin (Germany)
 http://phpManufaktur.de - ralf.hertsch@phpManufaktur.de
 
+Release 0.18 - 2013-11-24
+
+* changed: precheck.php does no longer check for Dwoo and DropletsExtension at
+  BlackCat CMS environment
+* added icon.png (BlackCat CMS) and tool_icon.png (WebsiteBaker 2.8.4)
+* added checks and handling for BlackCat CMS
+
 Release 0.17 - 2012-09-04
 
 * added ability to change the table prefix easy via config.json, please read
   <http://yals.de/OQRv0Y> for more informations
 * replaced frontend.css with educated.css
 * changed initializing Dwoo template engine
-* use optional DropletsExtension to autoload educated.css 
+* use optional DropletsExtension to autoload educated.css
 
 Release 0.16 - 2012-06-20
 
@@ -45,7 +52,7 @@ Release 0.12 - 2010-07-18
 Release 0.11 - 2010-04-08
 
 * Second BETA Release
- 
+
 Release 0.10 - 2009-06-24
 
 * First BETA Release
